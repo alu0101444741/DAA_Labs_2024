@@ -14,7 +14,6 @@
 
 #include <string>
 #include <vector>
-#include <unordered_map>
 #include <algorithm>
 using namespace std;
 
@@ -27,7 +26,7 @@ enum OperandType { INMEDIATO, DIRECTO, INDIRECTO, ETIQUETA };
  * @param label The label to search for.
  * @return The index of the label if found; otherwise, -1.
  */
-int get_label_index(const vector<std::pair<string, unsigned>>& labels, const string& label);
+int get_label_index(const vector<pair<string, unsigned>>& labels, const string& label);
 
 /**
  * @brief Determines the type of operand based on its prefix.

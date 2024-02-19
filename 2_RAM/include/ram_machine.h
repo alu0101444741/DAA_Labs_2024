@@ -46,8 +46,14 @@ public:
    */
   void WriteOutputTapeOnFile(const string& filename);
 
-  /** @brief Executes the program stored in the RAMMachine's program memory. */
-  void Execute();
+  /**
+   * @brief Executes the program stored in the RAMMachine's program memory.
+   * @param debug Debug mode.
+   * If 0 disables the debug mode
+   * If 1 shows how many instructions were executed
+   * If 2 also shows the instruction information and the current state of the data memory and tapes
+   */
+  void Execute(unsigned debug);
 
   /** @brief Displays information about the RAMMachine: stored program and tags. */
   void ShowInformation();

@@ -15,19 +15,42 @@
 #include <fstream>
 #include <sstream>
 
-/** @brief Executes the program stored in the RAMMachine's program memory. */
-void RAMMachine::Execute() {
-  data_memory_.resize(20);
+/**
+ * @brief Executes the program stored in the RAMMachine's program memory.
+ * @param debug Debug mode.
+ * If 0 disables the debug mode
+ * If 1 shows how many instructions were executed
+ * If 2 also shows the instruction information and the current state of the data memory and tapes
+ */
+void RAMMachine::Execute(unsigned debug) {
+  data_memory_.resize(10);
   input_tape_index_ = 0;
   program_counter_ = 0;
   stop_ = false;
+  unsigned number_of_instructions = 0;
+
+  if (debug == 2) {
+    cout << "RAM initial state:\n";
+    show_vector(data_memory_, "Data memory");
+    show_vector(input_tape_, "Input tape");
+    show_vector(output_tape_, "Output tape");
+    cout << endl;
+  }
 
   while (!stop_) {
-    //program_memory_[program_counter_]->ShowInformation();
-    program_memory_[program_counter_]->Execute(program_counter_, data_memory_, labels_, input_tape_, output_tape_, input_tape_index_, stop_); 
+    if (debug == 2) program_memory_[program_counter_]->ShowInformation();
+    program_memory_[program_counter_]->Execute(program_counter_, data_memory_, labels_, input_tape_, output_tape_, input_tape_index_, stop_);
+     
+    if (!stop_ && debug == 2) {
+      show_vector(data_memory_, "Data memory");      
+      show_vector(input_tape_, "Input tape");
+      cout << "Input tape index: " << input_tape_index_ << endl;
+      show_vector(output_tape_, "Output tape");
+      cout << "Output tape index: " << output_tape_.size() << endl << endl;
+    }    
+    ++ number_of_instructions;
   }
-  //show_vector(output_tape_, "Cinta de salida");
-  //show_vector(data_memory_, "Registros");
+  if (debug == 1 || debug == 2) cout << "Number of executed instructions: " << number_of_instructions << endl << endl;
 }
 
 /**

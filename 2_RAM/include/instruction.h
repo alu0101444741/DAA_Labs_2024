@@ -59,7 +59,7 @@ public:
 	string GetOperand() const { return operand_; }
 
 	/** @brief Displays information about the instruction: name, type, and value of the operand. */
-	void ShowInformation() { cout << name_ << " " << operand_type_to_string(type_) << " " << operand_ << endl; }
+	void ShowInformation() { cout << name_ << " " << operand_type_to_string(type_) << operand_ << endl; }
 
 	/** @brief Virtual destructor for the Instruction class to ensure proper cleanup of derived classes. */
 	virtual ~Instruction() {}
