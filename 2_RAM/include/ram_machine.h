@@ -34,11 +34,20 @@ public:
   void LoadProgramFromFile(const string& filename);
 
   /**
-   * @brief Executes the program stored in the RAMMachine's program memory
-   * using the provided input tape.
-   * @param input_tape The input tape to be used during program execution.
+   * @brief Loads an input tape from a file into the RAMMachine. This method reads integers separated by commas from the
+   * specified file and adds them to the input tape of the RAMMachine.
+   * @param filename The name of the file containing the program.
    */
-  void Execute(const vector<int>& input_tape);
+  void LoadInputTapeFromFile(const string& filename);
+
+  /**
+   * @brief Writes the current state of the output tape on a file as integers separated by commas. 
+   * @param filename The name/path of the output file.
+   */
+  void WriteOutputTapeOnFile(const string& filename);
+
+  /** @brief Executes the program stored in the RAMMachine's program memory. */
+  void Execute();
 
   /** @brief Displays information about the RAMMachine: stored program and tags. */
   void ShowInformation();

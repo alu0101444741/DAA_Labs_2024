@@ -13,14 +13,22 @@
 #include "ram_machine.h"
 
 int main() {
-  RAMMachine ram;
-  ram.LoadProgramFromFile("./input/test7.ram");
+  // RAM's program initialization
+  RAMMachine ram;  
+  ram.LoadProgramFromFile("./data/test7.ram");
 
-  vector<int> input_tape = {1, 2, 3, 4, -5, 100, 2000, 0, -5000, 0};
+  // Reading input tape from file
+  ram.LoadInputTapeFromFile("./data/tape_input/tape_2.input");
+  //vector<int> input_tape = {1, 2, 3, 4, -5, 100, 2000, 0, -5000, 0};
 
+  // Show the stored program and tags
   ram.ShowInformation();
 
-  ram.Execute(input_tape);
+  // Program execution
+  ram.Execute();
+
+  // Writting output tape on a file
+  ram.WriteOutputTapeOnFile("./data/tape_output/tape_X.output");
 
   return 0;
 }

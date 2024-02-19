@@ -15,24 +15,70 @@
 #include <fstream>
 #include <sstream>
 
-/**
- * @brief Executes the program stored in the RAMMachine's program memory
- * using the provided input tape.
- * @param input_tape The input tape to be used during program execution.
- */
-void RAMMachine::Execute(const vector<int>& input_tape) {
+/** @brief Executes the program stored in the RAMMachine's program memory. */
+void RAMMachine::Execute() {
   data_memory_.resize(20);
-  input_tape_ = input_tape;
   input_tape_index_ = 0;
   program_counter_ = 0;
   stop_ = false;
 
   while (!stop_) {
-    program_memory_[program_counter_]->ShowInformation();
+    //program_memory_[program_counter_]->ShowInformation();
     program_memory_[program_counter_]->Execute(program_counter_, data_memory_, labels_, input_tape_, output_tape_, input_tape_index_, stop_); 
   }
-  show_vector(output_tape_, "Cinta de salida");
+  //show_vector(output_tape_, "Cinta de salida");
   //show_vector(data_memory_, "Registros");
+}
+
+/**
+ * @brief Loads an input tape from a file into the RAMMachine. This method reads integers separated by commas from the
+ * specified file and adds them to the input tape of the RAMMachine.
+ * @param filename The name of the file containing the program.
+ */
+void RAMMachine::LoadInputTapeFromFile(const string& filename) {
+  // Open the file
+  ifstream file(filename);
+  if (!file.is_open()) {
+    cerr << "Error: Unable to open file " << filename << endl;
+    return;
+  }
+  // Read integers separated by commas from the file
+  string line;
+  while (getline(file, line)) {
+    stringstream ss(line);
+    string token;
+    while (getline(ss, token, ',')) {
+      try {
+        int value = stoi(token);
+        input_tape_.push_back(value);
+      } catch (const invalid_argument& e) {
+        cerr << "Error: Invalid input format in file " << filename << endl;
+        return;
+      }
+    }
+  }
+  file.close();
+}
+
+/**
+ * @brief Writes the current state of the output tape on a file as integers separated by commas. 
+ * @param filename The name/path of the output file.
+ */
+void RAMMachine::WriteOutputTapeOnFile(const string& filename) {
+  // Open the file for writing
+  ofstream output_file(filename, ios::out);
+  if (!output_file.is_open()) {
+    cerr << "Error: Unable to open file " << filename << " for writing." << endl;
+    return;
+  }
+  // Write integers from output tape to file separated by commas
+  for (unsigned i = 0; i < output_tape_.size(); ++i) {
+    output_file << output_tape_[i];
+    if (i < output_tape_.size() - 1) {
+      output_file << ",";
+    }
+  }
+  output_file.close();
 }
 
 /**
