@@ -7,7 +7,7 @@ BIN_DIR = bin
 SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
 HEADERS = $(wildcard $(INCLUDE_DIR)/*.h)
 OBJECTS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCES))
-EXECUTABLE = $(BIN_DIR)/matrix_multiplication
+EXECUTABLE = $(BIN_DIR)/ram_machine
 
 all: $(EXECUTABLE)
 
