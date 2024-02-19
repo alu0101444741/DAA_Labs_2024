@@ -28,14 +28,8 @@ void RAMMachine::Execute(const vector<int>& input_tape) {
   stop_ = false;
 
   while (!stop_) {
-    //cout << "PC: " << program_counter_ << " de " << program_memory_.size() << endl;
-
     program_memory_[program_counter_]->ShowInformation();
-    program_memory_[program_counter_]->Execute(program_counter_, data_memory_, labels_, input_tape_, output_tape_, input_tape_index_, stop_);
-    
-    cout << "PC: " << program_counter_ << " "; show_vector(data_memory_, "Registros");
-    //cout << "    ¿ Stop ? " << (stop_ ? "TRUE" : "FALSE") << endl;
-    //cout << "Input index: " << input_tape_index_ << " de " << input_tape_.size() << endl;    
+    program_memory_[program_counter_]->Execute(program_counter_, data_memory_, labels_, input_tape_, output_tape_, input_tape_index_, stop_); 
   }
   show_vector(output_tape_, "Cinta de salida");
   //show_vector(data_memory_, "Registros");
@@ -116,7 +110,6 @@ void RAMMachine::SearchLabels(const string& filename) {
       if (line.empty() || line.size() == 0 || line[0] == '#') continue;
       string::size_type label_end = line.find(':'); // Verificar si la línea contiene una etiqueta
       if (label_end != string::npos) {
-        cout << "Etiqueta encontrada en " << line_index << endl;
         string label = line.substr(0, label_end);
         labels_.push_back(make_pair(label, line_index));
         line = line.substr(label_end + 1); // Avanzar la posición de lectura después de la etiqueta
@@ -175,7 +168,7 @@ void RAMMachine::AddInstruction(const string& instruction, const string& operand
       this->program_memory_.push_back(new JGTZ(labels_[label_index].first, ETIQUETA));
     }    
   }
-  else cout << "Instruccion denegada: <" << instruction << ">" << "(index: " << label_index << ")\n";
+  else cerr << "Instruccion denegada: <" << instruction << ">" << "(index: " << label_index << ")\n";
 }
 
 /** @brief Displays information about the RAMMachine: stored program and tags. */

@@ -60,7 +60,7 @@ void READ::Execute(unsigned& program_counter, vector<int>& data_memory, const ve
     stop = true;
   }
   program_counter ++;
-  input_tape_index ++; cout << "(!) Input index: " << input_tape_index << endl;
+  input_tape_index ++;
 }
 
 /**
@@ -144,7 +144,7 @@ void JUMP::Execute(unsigned& program_counter, vector<int>& data_memory, const ve
                    const vector<int>& input_tape, vector<int>& output_tape, unsigned& input_tape_index, bool& stop) {
   for (unsigned i = 0; i < labels.size(); ++i) {
     if (labels[i].first == operand_) {
-      program_counter = labels[i].second; cout << "<--- Saltando a " <<  labels[i].second << endl;
+      program_counter = labels[i].second;
       break;
     }
   }
@@ -159,7 +159,7 @@ void JZERO::Execute(unsigned& program_counter, vector<int>& data_memory, const v
   if (data_memory[0] == 0) {
     for (unsigned i = 0; i < labels.size(); ++i) {
       if (labels[i].first == operand_) {
-        program_counter = labels[i].second; cout << "<--- Saltando a " <<  labels[i].second << endl;
+        program_counter = labels[i].second;
         break;
       }
     }

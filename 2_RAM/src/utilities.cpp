@@ -22,7 +22,6 @@
  */
 int get_label_index(const vector<std::pair<string, unsigned>>& labels, const string& label) {
   for (unsigned i = 0; i < labels.size(); ++i) {
-    //if (label != "1") cout << "Comparando <" << label << "> con <" << labels[i].first << ">\n";
     if (labels[i].first == label) return(i);
   }
   return(-1);
