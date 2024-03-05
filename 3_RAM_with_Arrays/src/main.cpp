@@ -5,16 +5,19 @@
  * Diseño y Análisis de Algoritmos
  *
  * @author Roberto Carrazana Pernia
- * @date: Feb 09 2024
+ * @date: Feb 18 2024
  *
  * @brief Main program to test the RAM machine.
  */
 
 #include "ram_machine.h"
 
-void manual_ram_execution();
+void manual_ram_execution(string test_filename, string input_tape_filename, string output_tape_filename);
 
 int main(int argc, char* argv[]) {
+
+  manual_ram_execution("test2", "tape_2", "tape_A"); return 0;
+
   // Arguments validation
   if (argc != 5) {
     cerr << "Usage: " << argv[0] << " test.ram filename.input filename.output debug" << endl;
@@ -38,11 +41,12 @@ int main(int argc, char* argv[]) {
   return 0;
 }
 
-void manual_ram_execution() {
-  RAMMachine ram;  
-  ram.LoadProgramFromFile("./data/test7.ram");
-  ram.LoadInputTapeFromFile("./data/tape_input/tape_2.input");
+void manual_ram_execution(string test_filename, string input_tape_filename, string output_tape_filename) {
+  RAMMachine ram;
+  const string folder_name = "./data/";
+  ram.LoadProgramFromFile(folder_name + test_filename + ".ram");
+  ram.LoadInputTapeFromFile(folder_name + "tape_input/" + input_tape_filename + ".input");
   //vector<int> input_tape = {1, 2, 3, 4, -5, 100, 2000, 0, -5000, 0};
   ram.Execute(2);
-  ram.WriteOutputTapeOnFile("./data/tape_output/tape_X.output");
+  ram.WriteOutputTapeOnFile(folder_name + "tape_output/" + output_tape_filename + ".output");
 }

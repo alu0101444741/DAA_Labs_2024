@@ -23,7 +23,9 @@
  * If 2 also shows the instruction information and the current state of the data memory and tapes
  */
 void RAMMachine::Execute(unsigned debug) {
-  data_memory_.resize(10);
+  unsigned register_size = 10;
+  data_memory_.resize(register_size);
+  for (vector<int>& r : data_memory_) r.resize(register_size);
   input_tape_index_ = 0;
   program_counter_ = 0;
   unsigned number_of_instructions = 0;
@@ -46,7 +48,7 @@ void RAMMachine::Execute(unsigned debug) {
      
     if (!stop_ && debug == 2) {
       for (unsigned i = 0; i < data_memory_.size(); ++i) {
-        show_vector(data_memory_[0], "Data memory [R" + to_string(i) + "]");
+        show_vector(data_memory_[i], "Data memory [R" + to_string(i) + "]");
       }
       
       show_vector(input_tape_, "Input tape");

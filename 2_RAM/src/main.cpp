@@ -16,7 +16,7 @@ void manual_ram_execution(string test_filename, string input_tape_filename, stri
 
 int main(int argc, char* argv[]) {
 
-  manual_ram_execution("test7", "tape_1", "tape_A"); return 0;
+  manual_ram_execution("test_modificacion", "tape_mod", "tape_outmod"); return 0;
 
   // Arguments validation
   if (argc != 5) {

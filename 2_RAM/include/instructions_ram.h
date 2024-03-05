@@ -13,6 +13,7 @@
 #ifndef INSTRUCTIONS_RAM_H
 #define INSTRUCTIONS_RAM_H
 
+#include <cmath>
 #include "instruction.h"
 
 /** @brief Class for the LOAD instruction. */
@@ -121,6 +122,20 @@ public:
 
 	/**
 	 * @brief Executes de DIV instruction. Divide a given operand to the R0 value.
+	 * To know about the parameters @see Instruction::Execute(...)
+	 */
+	void Execute(unsigned& program_counter, vector<int>& data_memory, const vector<pair<string, unsigned>>& labels,
+               const vector<int>& input_tape, vector<int>& output_tape, unsigned& input_tape_index, bool& stop) override;
+};
+
+/** @brief Class for the EXP instruction. */
+class EXP : public Instruction {
+public:
+	/** @brief Constructor for the DIV instruction class. */
+	EXP(const string& operand, const OperandType& type) : Instruction(operand, type) { name_ = "EXP"; };
+
+	/**
+	 * @brief Executes de EXP instruction. Calculate the value of R0 to a certain power.
 	 * To know about the parameters @see Instruction::Execute(...)
 	 */
 	void Execute(unsigned& program_counter, vector<int>& data_memory, const vector<pair<string, unsigned>>& labels,

@@ -54,57 +54,6 @@ void RAMMachine::Execute(unsigned debug) {
 }
 
 /**
- * @brief Loads an input tape from a file into the RAMMachine. This method reads integers separated by commas from the
- * specified file and adds them to the input tape of the RAMMachine.
- * @param filename The name of the file containing the program.
- */
-void RAMMachine::LoadInputTapeFromFile(const string& filename) {
-  // Open the file
-  ifstream file(filename);
-  if (!file.is_open()) {
-    cerr << "Error: Unable to open file " << filename << endl;
-    return;
-  }
-  // Read integers separated by commas from the file
-  string line;
-  while (getline(file, line)) {
-    stringstream ss(line);
-    string token;
-    while (getline(ss, token, ',')) {
-      try {
-        int value = stoi(token);
-        input_tape_.push_back(value);
-      } catch (const invalid_argument& e) {
-        cerr << "Error: Invalid input format in file " << filename << endl;
-        return;
-      }
-    }
-  }
-  file.close();
-}
-
-/**
- * @brief Writes the current state of the output tape on a file as integers separated by commas. 
- * @param filename The name/path of the output file.
- */
-void RAMMachine::WriteOutputTapeOnFile(const string& filename) {
-  // Open the file for writing
-  ofstream output_file(filename, ios::out);
-  if (!output_file.is_open()) {
-    cerr << "Error: Unable to open file " << filename << " for writing." << endl;
-    return;
-  }
-  // Write integers from output tape to file separated by commas
-  for (unsigned i = 0; i < output_tape_.size(); ++i) {
-    output_file << output_tape_[i];
-    if (i < output_tape_.size() - 1) {
-      output_file << ",";
-    }
-  }
-  output_file.close();
-}
-
-/**
  * @brief Loads a program from a file into the RAMMachine. This method reads instructions from the
  * specified file, parses them, and adds them to the program memory of the RAMMachine.
  * @param filename The name of the file containing the program.
@@ -216,6 +165,9 @@ void RAMMachine::AddInstruction(const string& instruction, const string& operand
   }
   else if (instruction == "div") {
     this->program_memory_.push_back(new DIV(operand, operand_type));
+  }
+  else if (instruction == "exp") {
+    this->program_memory_.push_back(new EXP(operand, operand_type));
   } 
   else if (instruction == "read") {
     this->program_memory_.push_back(new READ(operand, operand_type));
@@ -238,6 +190,57 @@ void RAMMachine::AddInstruction(const string& instruction, const string& operand
     }    
   }
   else cerr << "Instruccion denegada: <" << instruction << ">" << "(index: " << label_index << ")\n";
+}
+
+/**
+ * @brief Loads an input tape from a file into the RAMMachine. This method reads integers separated by commas from the
+ * specified file and adds them to the input tape of the RAMMachine.
+ * @param filename The name of the file containing the program.
+ */
+void RAMMachine::LoadInputTapeFromFile(const string& filename) {
+  // Open the file
+  ifstream file(filename);
+  if (!file.is_open()) {
+    cerr << "Error: Unable to open file " << filename << endl;
+    return;
+  }
+  // Read integers separated by commas from the file
+  string line;
+  while (getline(file, line)) {
+    stringstream ss(line);
+    string token;
+    while (getline(ss, token, ',')) {
+      try {
+        int value = stoi(token);
+        input_tape_.push_back(value);
+      } catch (const invalid_argument& e) {
+        cerr << "Error: Invalid input format in file " << filename << endl;
+        return;
+      }
+    }
+  }
+  file.close();
+}
+
+/**
+ * @brief Writes the current state of the output tape on a file as integers separated by commas. 
+ * @param filename The name/path of the output file.
+ */
+void RAMMachine::WriteOutputTapeOnFile(const string& filename) {
+  // Open the file for writing
+  ofstream output_file(filename, ios::out);
+  if (!output_file.is_open()) {
+    cerr << "Error: Unable to open file " << filename << " for writing." << endl;
+    return;
+  }
+  // Write integers from output tape to file separated by commas
+  for (unsigned i = 0; i < output_tape_.size(); ++i) {
+    output_file << output_tape_[i];
+    if (i < output_tape_.size() - 1) {
+      output_file << ",";
+    }
+  }
+  output_file.close();
 }
 
 /** @brief Displays information about the RAMMachine: stored program and tags. */

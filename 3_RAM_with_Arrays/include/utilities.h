@@ -53,7 +53,9 @@ void trim_leading_whitespace(string& line);
  * @brief Displays the elements of a vector along with a title.
  * @param array The vector to be displayed.
  * @param title The title to be printed before the vector elements.
+ * @param start_index
+ * @param end_index
  */
-void show_vector(const vector<int>& array, const string& title);
+void show_vector(const vector<int>& array, const string& title, unsigned start_index = 0, unsigned end_index = 0);
 
 #endif // UTILITIES_H

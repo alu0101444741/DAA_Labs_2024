@@ -137,6 +137,20 @@ void DIV::Execute(unsigned& program_counter, vector<int>& data_memory, const vec
 }
 
 /**
+ * @brief Executes de EXP instruction. Calculate the value of R0 to a certain power.
+ * To know about the parameters @see Instruction::Execute(...)
+ */
+void EXP::Execute(unsigned& program_counter, vector<int>& data_memory, const vector<pair<string, unsigned>>& labels,
+                   const vector<int>& input_tape, vector<int>& output_tape, unsigned& input_tape_index, bool& stop) {
+  int operand_value = stoi(operand_);
+  if (type_ == INMEDIATO) data_memory[0] = pow(data_memory[0], operand_value);
+  else if (type_ == INDIRECTO) data_memory[0] = pow(data_memory[0], data_memory[data_memory[operand_value]]);
+  else data_memory[0] = pow(data_memory[0], data_memory[operand_value]);
+
+  program_counter ++;
+}
+
+/**
  * @brief Executes de JUMP instruction. Set program counter based on a given tag.
  * To know about the parameters @see Instruction::Execute(...)
  */

@@ -37,7 +37,7 @@ void STORE::Execute(unsigned& program_counter, vector<vector<int>>& data_memory,
   int operand_value = stoi(operand_);
   if (type_ == DIRECTO) {
     if (!array_behaviour_) data_memory[operand_value][0] = data_memory[0][0];
-    else
+    else data_memory[operand_value][index_] = data_memory[0][0];
   }
   else if (type_ == INDIRECTO) data_memory[data_memory[operand_value][0]][0] = data_memory[0][0];
   else {
@@ -60,7 +60,7 @@ void READ::Execute(unsigned& program_counter, vector<vector<int>>& data_memory, 
   }
 	if (type_ == DIRECTO) {
     if (!array_behaviour_) data_memory[operand_value][0] = input_tape[input_tape_index];
-    else
+    else data_memory[operand_value][index_] = input_tape[input_tape_index];
   }
   else if (type_ == INDIRECTO) data_memory[data_memory[operand_value][0]][0] = input_tape[input_tape_index];
   else {
@@ -84,7 +84,7 @@ void WRITE::Execute(unsigned& program_counter, vector<vector<int>>& data_memory,
   }
   if (type_ == DIRECTO) {
     if (!array_behaviour_) output_tape.push_back(data_memory[operand_value][0]);
-    else
+    else output_tape.push_back(data_memory[operand_value][index_]);
   }
   else if (type_ == INDIRECTO) output_tape.push_back(data_memory[data_memory[operand_value][0]][0]);
   else output_tape.push_back(operand_value);
@@ -102,7 +102,7 @@ void ADD::Execute(unsigned& program_counter, vector<vector<int>>& data_memory, c
   else if (type_ == INDIRECTO) data_memory[0][0] += data_memory[data_memory[operand_value][0]][0];
   else {
     if (!array_behaviour_) data_memory[0][0] += data_memory[operand_value][0];
-    else
+    else data_memory[0][0] += data_memory[operand_value][index_];
   }
   program_counter ++;
 }
@@ -118,7 +118,7 @@ void SUB::Execute(unsigned& program_counter, vector<vector<int>>& data_memory, c
   else if (type_ == INDIRECTO) data_memory[0][0] -= data_memory[data_memory[operand_value][0]][0];
   else {
     if (!array_behaviour_) data_memory[0][0] -= data_memory[operand_value][0];
-    else 
+    else data_memory[0][0] -= data_memory[operand_value][index_];
   }
   program_counter ++;
 }
@@ -134,7 +134,7 @@ void MUL::Execute(unsigned& program_counter, vector<vector<int>>& data_memory, c
   else if (type_ == INDIRECTO) data_memory[0][0] *= data_memory[data_memory[operand_value][0]][0];
   else {
     if (!array_behaviour_) data_memory[0][0] *= data_memory[operand_value][0];
-    else
+    else data_memory[0][0] *= data_memory[operand_value][index_];
   }
   program_counter ++;
 }
@@ -150,8 +150,22 @@ void DIV::Execute(unsigned& program_counter, vector<vector<int>>& data_memory, c
   else if (type_ == INDIRECTO) data_memory[0][0] /= data_memory[data_memory[operand_value][0]][0];
   else {
     if (!array_behaviour_) data_memory[0][0] /= data_memory[operand_value][0];
-    else
+    else data_memory[0][0] /= data_memory[operand_value][index_];
   }
+  program_counter ++;
+}
+
+/**
+ * @brief Executes de EXP instruction. Calculate the value of R0 to a certain power.
+ * To know about the parameters @see Instruction::Execute(...)
+ */
+void EXP::Execute(unsigned& program_counter, vector<int>& data_memory, const vector<pair<string, unsigned>>& labels,
+                   const vector<int>& input_tape, vector<int>& output_tape, unsigned& input_tape_index, bool& stop) {
+  int operand_value = stoi(operand_);
+  if (type_ == INMEDIATO) data_memory[0] = pow(data_memory[0], operand_value);
+  else if (type_ == INDIRECTO) data_memory[0] = pow(data_memory[0], data_memory[data_memory[operand_value]]);
+  else data_memory[0] = pow(data_memory[0], data_memory[operand_value]);
+
   program_counter ++;
 }
 

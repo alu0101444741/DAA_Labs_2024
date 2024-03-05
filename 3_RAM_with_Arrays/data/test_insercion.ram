@@ -1,0 +1,44 @@
+# for j = 2 to n do
+#    key = A[j]
+#    i = j - 1
+#    while i > 0 and A[i] > key
+#       A[i + 1] = A[i]
+#       i = i - 1
+#    end
+
+# Variables: n, j, key, i en R1[0, 1, 2, 3]
+# Primero es necesario almacenar el array (cinta de entrada) en un registro, en este caso R2
+# Suponemos array de 10 posiciones, entonces n = 10
+#
+
+# Array size (n)
+LOAD =10
+STORE 1[0]
+
+# j = 2
+LOAD =2
+STORE 1[1]
+
+# Cargar el valor de n
+LOAD 1[0]
+# Restar 2 a n para obtener el límite del bucle 
+SUB =2
+# Si n - 2 es cero, saltar al final del bucle
+JZERO end_for_loop 
+
+# Cargar el valor actual de j
+for_start: LOAD 2[] 
+
+# Incrementar j
+LOAD 1[1]
+ADD =1
+STORE 1[1]
+# Cargar el valor de n y restar 2
+LOAD 1[0]
+SUB =2
+# Restar j al límite del bucle. Si (n - 2 - j) > 0, volver al inicio del bucle  
+SUB 1[1]
+
+JGTZ for_start  
+
+end_for_loop:

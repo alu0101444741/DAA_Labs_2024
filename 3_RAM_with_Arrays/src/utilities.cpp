@@ -63,10 +63,14 @@ void trim_leading_whitespace(string& line) {
  * @brief Displays the elements of a vector along with a title.
  * @param array The vector to be displayed.
  * @param title The title to be printed before the vector elements.
+ * @param start_index
+ * @param end_index
  */
-void show_vector(const vector<int>& array, const string& title) {
-  cout << title + ": ";  
-  for (unsigned i = 0; i < array.size(); ++i) {
+void show_vector(const vector<int>& array, const string& title, unsigned start_index, unsigned end_index) { 
+  cout << title + ": ";
+  unsigned start = max(0, min((int)start_index, (int)array.size() - 1));
+  unsigned end = (end_index > array.size() || end_index == 0) ? array.size() : end_index;
+  for (unsigned i = start; i < end; ++i) {
     cout << array[i];
     if (i < array.size() - 1) cout << ", ";
   }
