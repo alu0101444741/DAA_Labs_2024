@@ -16,13 +16,17 @@
 #include "base_problem.h"
 #include "binarysearch_solution.h"
 
-class BinarySearchProblem: public Problem {
+template <class T>
+class BinarySearchProblem: public Problem<T> {
+private:
+  int solution_index_;
+  vector<T> merge_array_; 
 public:
 	/**
    * @brief BinarySearchProblem constructor to sort a vector.
    * @param array - vector to sort
    */
-	BinarySearchProblem(const vector<int>& array) : Problem(array) {}
+	BinarySearchProblem(const vector<T>& array) : Problem<T>(array) {}
 
   /**
    * @brief Method to know if the current problem is small enough to stop dividing it. 
@@ -34,13 +38,12 @@ public:
    * @brief Divide method to slice the problem into smaller parts. 
    * @return problem parts
    */
-	pair<Problem*, Problem*> Divide() override;
+	pair<Problem<T>*, Problem<T>*> Divide() override;
 
   /**
    * @brief Sort a problem that is small enough. 
    * @param solution - solution pointer that store the sorted vector
    */
-	void SolveSmall(Solution* solution) override;
+	void SolveSmall(Solution<T>* solution) override;
 };
-
 #endif /* BINARYSEARCH_PROBLEM_H_ */

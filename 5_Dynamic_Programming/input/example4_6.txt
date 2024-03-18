@@ -1,0 +1,16 @@
+6
+A B 39
+A C 30
+A D 8
+A E 29
+A F 21
+B C 35
+B D 32
+B E 44
+B F 32
+C D 50
+C E 49
+C F 33
+D E 27
+D F 22
+E F 10

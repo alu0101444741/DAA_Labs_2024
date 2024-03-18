@@ -17,8 +17,10 @@
 #include "base_problem.h"
 #include "quicksort_solution.h"
 
-class QuicksortProblem: public Problem {
+template <class T>
+class QuicksortProblem: public Problem<T> {
 private:
+  vector<T> merge_array_;
   int left_limit_, right_limit_, pivot_;
 public:
   /**
@@ -27,7 +29,7 @@ public:
    * @param left - left limit
    * @param right - right limit
    */
-	QuicksortProblem(const vector<int>& array, int left, int right) : Problem(array), left_limit_(left), right_limit_(right) {}
+	QuicksortProblem(const vector<T>& array, int left, int right) : /*Problem<T>(),*/ left_limit_(left), right_limit_(right) { merge_array_ = array; }
 
   /**
    * @brief Method to know if the current problem is small enough to stop dividing it. 
@@ -39,12 +41,12 @@ public:
    * @brief Divide method to slice the problem into smaller parts. 
    * @return problem parts
    */
-	pair<Problem*, Problem*> Divide() override;
+	pair<Problem<T>*, Problem<T>*> Divide() override;
 
   /**
    * @brief Sort a problem that is small enough. 
    * @param solution - solution pointer that store the sorted vector
    */
-	void SolveSmall(Solution* solution) override;
+	void SolveSmall(Solution<T>* solution) override;
 };
-#endif /* QUICKSORT_PROBLEM_H_ */
+#endif // QUICKSORT_PROBLEM_H_

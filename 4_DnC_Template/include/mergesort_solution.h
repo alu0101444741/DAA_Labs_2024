@@ -15,24 +15,25 @@
 
 #include "base_solution.h"
 
-class MergesortSolution: public Solution {
+template <class T>
+class MergesortSolution: public Solution<T> {
 private:
-  vector<int> merge_array_;
+  vector<T> merge_array_;
 public:
   /** @brief QuicksortSolution constructor. */
-	MergesortSolution() : Solution() {} 
+	MergesortSolution() : Solution<T>() {} 
 	
   /**
    * @brief Combine two problem parts once both are sorted. 
    * @param sub_solutions - problem parts
    */
-	void Combine(pair<Solution*, Solution*> sub_solutions) override;  
+	void Combine(pair<Solution<T>*, Solution<T>*> sub_solutions) override;  
 
   /**
    * @brief Method to get a pointer to a Solution 
    * @return Solution pointer
    */
-  Solution* GetInstance() override;
+  Solution<T>* GetInstance() override;
 
   string GetRecurrence() override;
   

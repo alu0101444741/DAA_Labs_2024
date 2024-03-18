@@ -15,12 +15,15 @@
 
 #include "base_solution.h"
 
+template <class T>
 class Problem {
 protected:
-  vector<int> merge_array_;
+  T problem_value_;
 public:
 	/** @brief Problem constructor . */
-	Problem(const vector<int>& array) : merge_array_(array) {}
+	//Problem(const vector<int>& array) : merge_array_(array) {}
+  Problem(){}
+  Problem(const T& problem_value) : problem_value_(problem_value) {}
 
   /** @brief Problem destructor . */
 	virtual ~Problem() {}
@@ -35,13 +38,13 @@ public:
    * @brief Divide method to slice the problem into smaller parts. 
    * @return problem parts
    */
-	virtual pair<Problem*, Problem*> Divide() = 0;
+	virtual pair<Problem<T>*, Problem<T>*> Divide() = 0;
 
   /**
    * @brief Sort a problem that is small enough. 
    * @param solution - solution pointer that store the sorted vector
    */
-	virtual void SolveSmall(Solution* solution) = 0;
+	virtual void SolveSmall(Solution<T>* solution) = 0;
 };
 
 #endif /* PROBLEM_H_ */

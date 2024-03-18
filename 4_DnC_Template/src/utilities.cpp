@@ -28,7 +28,8 @@ vector<int> create_random_vector(unsigned size, int maximum_value) {
 }
 
 // Función para verificar si un array está ordenado
-bool vector_is_sorted(const vector<int>& array) {
+template <typename T>
+bool vector_is_sorted(const vector<T>& array) {
   for (unsigned i = 1; i < array.size(); ++i) {
     if (array[i] < array[i - 1])  return false;
   }
@@ -40,7 +41,8 @@ bool vector_is_sorted(const vector<int>& array) {
  * @param array The vector to be displayed.
  * @param title The title to be printed before the vector elements.
  */
-void show_vector(const vector<int>& array, const string& title) {
+template <typename T>
+void show_vector(const vector<T>& array, const string& title) {
   cout << title + ": ";  
   for (unsigned i = 0; i < array.size(); ++i) {
     cout << array[i];

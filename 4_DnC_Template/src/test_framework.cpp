@@ -20,7 +20,7 @@
 * @param maximum_size - maximum vector size to test
 */
 void sort_tests(unsigned test_amount, unsigned minimum_size, unsigned maximum_size) {
-  DnCFramework* framework = new DnCFramework();
+  DnCFramework<int>* framework = new DnCFramework<int>();
   vector<int> random_vector;
   for (unsigned size = minimum_size; size <= maximum_size; ++size) {
     cout << kTableDelimiter << kTableDelimiter << kTableDelimiter << endl;
@@ -30,8 +30,8 @@ void sort_tests(unsigned test_amount, unsigned minimum_size, unsigned maximum_si
       random_vector = create_random_vector(size, kMaximumVectorValue);      
       cout << "\n\tVector: "; show_vector(random_vector, "");
 
-      test_algorithm("MergeSort", framework, new MergesortSolution(), new MergesortProblem(random_vector));
-      test_algorithm("QuickSort", framework, new QuicksortSolution(), new QuicksortProblem(random_vector, 0, random_vector.size()-1));      
+      test_algorithm("MergeSort", framework, new MergesortSolution<int>(), new MergesortProblem<int>(random_vector));
+      test_algorithm("QuickSort", framework, new QuicksortSolution<int>(), new QuicksortProblem<int>(random_vector, 0, random_vector.size()-1));      
     }    
   }
   cout << kTableDelimiter << kTableDelimiter << kTableDelimiter << endl;
@@ -44,7 +44,8 @@ void sort_tests(unsigned test_amount, unsigned minimum_size, unsigned maximum_si
  * @param solution - Pointer to the solution object.
  * @param problem - Pointer to the problem object.
  */
-void test_algorithm(const string& name, DnCFramework* framework, Solution* solution, Problem* problem) {
+template <typename T>
+void test_algorithm(const string& name, DnCFramework<T>* framework, Solution<T>* solution, Problem<T>* problem) {
   unsigned maximum_depth = 0;
   cout << endl; //cout << "\n<" + name + ">: ";
   

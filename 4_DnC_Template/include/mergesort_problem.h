@@ -10,19 +10,22 @@
  * @brief QuicksortProblem class definition.
  */
 
-#ifndef MERGESORTPROBLEM_H_
-#define MERGESORTPROBLEM_H_
+#ifndef MERGESORT_PROBLEM_H_
+#define MERGESORT_PROBLEM_H_
 
 #include "base_problem.h"
 #include "mergesort_solution.h"
 
-class MergesortProblem: public Problem {
+template <class T>
+class MergesortProblem: public Problem<T> {
+private:
+   vector<T> merge_array_;
 public:
 	/**
    * @brief MergesortProblem constructor to sort a vector.
    * @param array - vector to sort
    */
-	MergesortProblem(const vector<int>& array) : Problem(array) {}
+	MergesortProblem(const vector<T>& array) : /*Problem<T>(),*/ merge_array_(array) {}
 
   /**
    * @brief Method to know if the current problem is small enough to stop dividing it. 
@@ -34,13 +37,13 @@ public:
    * @brief Divide method to slice the problem into smaller parts. 
    * @return problem parts
    */
-	pair<Problem*, Problem*> Divide() override;
+	pair<Problem<T>*, Problem<T>*> Divide() override;
 
   /**
    * @brief Sort a problem that is small enough. 
    * @param solution - solution pointer that store the sorted vector
    */
-	void SolveSmall(Solution* solution) override;
+	void SolveSmall(Solution<T>* solution) override;
 };
 
-#endif /* MERGESORTPROBLEM_H_ */
+#endif /* MERGESORT_PROBLEM_H_ */

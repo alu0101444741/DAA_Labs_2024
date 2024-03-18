@@ -21,7 +21,8 @@ using namespace std;
  * @param first_position - first index
  * @param second_position - second index
  */
-void swap(vector<int>& array, int first_position, int second_position);
+template <typename T>
+void swap(vector<T>& array, int first_position, int second_position);
 
 /**
  * @brief Quicksort helper function.
@@ -32,6 +33,7 @@ void swap(vector<int>& array, int first_position, int second_position);
  * @param right_limit
  * @return intersection index 
  */
-int partition(vector<int>& array, int left_limit, int right_limit);
+template <typename T>
+int partition(vector<T>& array, int left_limit, int right_limit);
 
 #endif // QUICKSORT_UTILITIES_H

@@ -16,9 +16,10 @@
 #include "base_problem.h"
 #include "base_solution.h"
 
+template <class T>
 class DnCFramework {
 public:
-  Solution* algorithm_;
+  Solution<T>* algorithm_;
   unsigned recursive_calls_;
   unsigned maximum_depth_;
 
@@ -31,13 +32,13 @@ public:
    * @param problem - problem to solve
    * @param solution - solution pointer to store the solution
    */
-	void Solve(Problem* problem, Solution* solution, unsigned maximum_depth);
+	void Solve(Problem<T>* problem, Solution<T>* solution, unsigned maximum_depth);
   
   void ResetRecursiveCalls(); // Modificacion Mar 5 2024
   void ResetMaximumDepth(); // Modificacion Mar 5 2024
 
   string GetRecurrence();
-  void SetAlgorithm(Solution* solution);
+  void SetAlgorithm(Solution<T>* solution);
 
   /** @brief Framework destructor. */
 	virtual ~DnCFramework() {}

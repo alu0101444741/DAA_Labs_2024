@@ -17,9 +17,10 @@
  * @brief Combine two problem parts once both are sorted. 
  * @param sub_solutions - problem parts
  */
-void MergesortSolution::Combine(pair<Solution*, Solution*> sub_solutions) {
-  vector<int> first_half = ((MergesortSolution*)sub_solutions.first)->merge_array_;
-  vector<int> second_half = ((MergesortSolution*)sub_solutions.second)->merge_array_;
+template <typename T>
+void MergesortSolution<T>::Combine(pair<Solution<T>*, Solution<T>*> sub_solutions) {
+  vector<T> first_half = ((MergesortSolution<T>*)sub_solutions.first)->merge_array_;
+  vector<T> second_half = ((MergesortSolution<T>*)sub_solutions.second)->merge_array_;
   merge_array_.resize(first_half.size() + second_half.size());
 
   unsigned i = 0, j = 0, k = 0;
@@ -45,10 +46,12 @@ void MergesortSolution::Combine(pair<Solution*, Solution*> sub_solutions) {
  * @brief Method to get a pointer to a Solution 
  * @return Solution pointer
  */
-Solution* MergesortSolution::GetInstance() {
-	return new MergesortSolution();
+template <typename T>
+Solution<T>* MergesortSolution<T>::GetInstance() {
+	return new MergesortSolution<T>();
 }
 
-string MergesortSolution::GetRecurrence() { return "T(n)=2T(n/2)+O(n)";}
+template <typename T>
+string MergesortSolution<T>::GetRecurrence() { return "T(n)=2T(n/2)+O(n)";}
 
 //MergesortSolution::~MergesortSolution() {}

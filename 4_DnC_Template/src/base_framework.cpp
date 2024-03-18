@@ -18,7 +18,8 @@
  * @param problem - problem to solve
  * @param solution - solution pointer to store the solution
  */
-void DnCFramework::Solve(Problem* problem, Solution* solution, unsigned current_depth) {
+template <typename T>
+void DnCFramework<T>::Solve(Problem<T>* problem, Solution<T>* solution, unsigned current_depth) {
 	//cout << "Current depth: " << current_depth; cout << " _ Recursion call: " << recursive_calls_ << endl;
 	recursive_calls_ += 1;
 	
@@ -30,8 +31,8 @@ void DnCFramework::Solve(Problem* problem, Solution* solution, unsigned current_
 		// Modificacion
 		//recursive_calls_ += 1;	
 
-		pair<Problem*, Problem*> sub_problems;
-		pair<Solution*, Solution*> sub_solutions;
+		pair<Problem<T>*, Problem<T>*> sub_problems;
+		pair<Solution<T>*, Solution<T>*> sub_solutions;
 		sub_problems = problem->Divide();
 		sub_solutions.first = solution->GetInstance();
 		sub_solutions.second = solution->GetInstance();
@@ -41,19 +42,23 @@ void DnCFramework::Solve(Problem* problem, Solution* solution, unsigned current_
 	}
 };
 
-void DnCFramework::SetAlgorithm(Solution* solution) {
+template <typename T>
+void DnCFramework<T>::SetAlgorithm(Solution<T>* solution) {
 	algorithm_ = solution;
 }
 
-string DnCFramework::GetRecurrence() {
+template <typename T>
+string DnCFramework<T>::GetRecurrence() {
 	return algorithm_->GetRecurrence();
 }
 
-void DnCFramework::ResetRecursiveCalls() {
+template <typename T>
+void DnCFramework<T>::ResetRecursiveCalls() {
 	recursive_calls_ = 0;
 }
 
-void DnCFramework::ResetMaximumDepth() {
+template <typename T>
+void DnCFramework<T>::ResetMaximumDepth() {
 	maximum_depth_ = 0;
 }
 

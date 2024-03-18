@@ -20,7 +20,8 @@ using namespace std;
  * @param array The vector to be displayed.
  * @param title The title to be printed before the vector elements.
  */
-void show_vector(const vector<int>& array, const string& title);
+template <typename T>
+void show_vector(const vector<T>& array, const string& title);
 
 /**
 * @brief Create a vector with random integers
@@ -30,6 +31,7 @@ void show_vector(const vector<int>& array, const string& title);
 */
 vector<int> create_random_vector(unsigned size, int maximum_value);
 
-bool vector_is_sorted(const vector<int>& array);
+template <typename T>
+bool vector_is_sorted(const vector<T>& array);
 
 #endif // UTILITIES_H

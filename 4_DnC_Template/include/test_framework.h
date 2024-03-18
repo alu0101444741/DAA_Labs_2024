@@ -20,6 +20,7 @@
 #include "base_framework.h"
 #include "mergesort_problem.h"
 #include "quicksort_problem.h"
+#include "binarysearch_problem.h"
 
 const string kTableDelimiter = "--------------";
 const int kMaximumVectorValue = 100;
@@ -40,8 +41,9 @@ void sort_tests(unsigned test_amount, unsigned minimum_size, unsigned maximum_si
  * @param solution - Pointer to the solution object.
  * @param problem - Pointer to the problem object.
  */
-void test_algorithm(const string& name, DnCFramework* framework, Solution* solution, Problem* problem);
+template <typename T>
+void test_algorithm(const string& name, DnCFramework<T>* framework, Solution<T>* solution, Problem<T>* problem);
 
 
 
-#endif /* TEST_FRAMEWORK_H_*/
+#endif // TEST_FRAMEWORK_H_

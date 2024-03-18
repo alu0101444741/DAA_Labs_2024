@@ -22,6 +22,7 @@ int busqueda_binaria(vector<int>& lista, int x, unsigned izquierda, unsigned der
 
 void ordenacion_por_insercion(vector<int>& lista, int n, unsigned& complejidad);
 
-void show_vector(const vector<int>& integer_vector);
+template <typename T>
+void show_vector(const vector<T>& integer_vector);
 
 #endif /* DIVIDE_CONQUER_H_ */

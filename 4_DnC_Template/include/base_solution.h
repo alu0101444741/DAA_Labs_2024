@@ -17,7 +17,10 @@
 #include <utility>
 #include "utilities.h"
 
+template <class T>
 class Solution {
+protected:
+  T solution_value_;
 public:
 	/** @brief Solution constructor. */
 	Solution() {}
@@ -26,13 +29,13 @@ public:
    * @brief Combine two problem parts once both are sorted. 
    * @param sub_solutions - problem parts
    */
-	virtual void Combine(pair<Solution*, Solution*> sub_solutions) = 0;	
+	virtual void Combine(pair<Solution<T>*, Solution<T>*> sub_solutions) = 0;	
 
   /**
    * @brief Method to get a pointer to a Solution 
    * @return Solution pointer
    */
-  virtual Solution* GetInstance() = 0;
+  virtual Solution<T>* GetInstance() = 0;
 
   virtual string GetRecurrence() = 0;
   //string GetRecurrence() { return "T(n) <= " + a + "T(" + b + ") +" + c ;} //aT(b) + c
@@ -42,11 +45,11 @@ public:
    * @param array - new vector
    */
   //virtual void SetValue(const vector<int>& array) { merge_array = array; }
+  virtual void SetValue(const T& value) { solution_value_ = value; }
 
   virtual void Show() = 0;
 
   /** @brief Solution destructor */
 	virtual ~Solution() {}
 };
-
 #endif /* SOLUTION_H_ */

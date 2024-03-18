@@ -17,9 +17,10 @@
  * @brief Combine two problem parts once both are sorted. 
  * @param sub_solutions - problem parts
  */
-void QuicksortSolution::Combine(pair<Solution*, Solution*> sub_solutions) {
-  vector<int> first_half = (((QuicksortSolution*)sub_solutions.first))->merge_array_;
-  vector<int> second_half = (((QuicksortSolution*)sub_solutions.second))->merge_array_;
+template <typename T>
+void QuicksortSolution<T>::Combine(pair<Solution<T>*, Solution<T>*> sub_solutions) {
+  vector<T> first_half = (((QuicksortSolution<T>*)sub_solutions.first))->merge_array_;
+  vector<T> second_half = (((QuicksortSolution<T>*)sub_solutions.second))->merge_array_;
   if (vector_is_sorted(first_half)) merge_array_ = first_half;
   else merge_array_ = second_half;
 }
@@ -28,12 +29,14 @@ void QuicksortSolution::Combine(pair<Solution*, Solution*> sub_solutions) {
  * @brief Method to get a pointer to a Solution 
  * @return Solution pointer
  */
-Solution* QuicksortSolution::GetInstance() {
-	return new QuicksortSolution();
+template <typename T>
+Solution<T>* QuicksortSolution<T>::GetInstance() {
+	return new QuicksortSolution<T>();
 }
 
 /**
  * @brief Get the recurrence relation for the Quicksort algorithm.
  * @return string - The recurrence relation in the form T(n) = T(k) + T(n−k−1) + O(n).
  */
-string QuicksortSolution::GetRecurrence() { return "T(n)=T(k)+T(n−k−1)+O(n)"; }
+template <typename T>
+string QuicksortSolution<T>::GetRecurrence() { return "T(n)=T(k)+T(n−k−1)+O(n)"; }

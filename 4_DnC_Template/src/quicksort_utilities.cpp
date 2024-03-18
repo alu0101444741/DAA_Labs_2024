@@ -22,7 +22,8 @@
  * @param pivot 
  * @return intersection index 
  */
-int partition(vector<int>& array, int left_limit, int right_limit/*, int pivot*/) {
+template <typename T>
+int partition(vector<T>& array, int left_limit, int right_limit/*, int pivot*/) {
   /*int left = left_limit, right = right_limit;
   while(left < right) {
     while(array[left] < pivot) left++;
@@ -34,17 +35,17 @@ int partition(vector<int>& array, int left_limit, int right_limit/*, int pivot*/
   swap(array, min(left, right_limit), right_limit);
   return(min(left, right_limit));*/
   int pivot = array[right_limit]; // selecciona el pivote
-    int i = (left_limit - 1); // índice del elemento más pequeño
+  int i = (left_limit - 1); // índice del elemento más pequeño
 
-    for (int j = left_limit; j <= right_limit; j++) {
-        // Si el elemento actual es más pequeño que el pivote
-        if (array[j] < pivot) {
-            i++; // incrementa el índice del elemento más pequeño
-            swap(array, i, j);
-        }
+  for (int j = left_limit; j <= right_limit; j++) {
+    // Si el elemento actual es más pequeño que el pivote
+    if (array[j] < pivot) {
+      i++; // incrementa el índice del elemento más pequeño
+      swap(array, i, j);
     }
-    swap(array, i + 1, right_limit);
-    return (i + 1);
+  }
+  swap(array, i + 1, right_limit);
+  return (i + 1);
 }
 
 /**
@@ -53,8 +54,9 @@ int partition(vector<int>& array, int left_limit, int right_limit/*, int pivot*/
  * @param first_position - first index
  * @param second_position - second index
  */
-void swap(vector<int>& array, int first_position, int second_position) {
-  int swap_number = array[first_position];  
+template <typename T>
+void swap(vector<T>& array, int first_position, int second_position) {
+  T swap_element = array[first_position];  
   array[first_position] = array[second_position];
-  array[second_position] = swap_number;
+  array[second_position] = swap_element;
 }

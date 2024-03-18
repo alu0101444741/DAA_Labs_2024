@@ -45,7 +45,8 @@ void ordenacion_por_insercion(vector<int>& lista, int n, unsigned& complejidad) 
 * @brief Prints a vector of integers
 * @param integer_vector
 */
-void show_vector(const vector<int>& integer_vector){
+template <typename T>
+void show_vector(const vector<T>& integer_vector){
   unsigned size = integer_vector.size();
   for (unsigned i = 0; i < size; ++i){
     cout << integer_vector[i];
