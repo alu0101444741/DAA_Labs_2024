@@ -24,8 +24,8 @@ int BruteForceTSP::Solve(const string& start_node) {
   if (start_node != node_names_[0]) SwapNodes(start_node, node_names_[0]);
   unsigned size = node_names_.size(),
                   minimum_sum = INT_MAX;
-  vector<string> nodes, current_path;
 
+  vector<string> nodes, current_path;
   for(unsigned i = 0; i < size; ++i) {
     if(node_names_[i] != start_node) {
       nodes.push_back(node_names_[i]);
@@ -40,6 +40,7 @@ int BruteForceTSP::Solve(const string& start_node) {
     current_path.resize(0);
     current_path.push_back(start_node);
 
+    // Traverse through each node in the current permutation
     for (unsigned i = 0; i < nodes.size(); i++) {
       path_weight += adjacency_matrix_[current_node_index][GetIndexOfNode(nodes[i])];
       current_node_index = GetIndexOfNode(nodes[i]);

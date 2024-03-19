@@ -8,10 +8,33 @@
  * @date: Mar 19 2023
  *
  * @brief Utility functions.
- * 
  */
 
 #include "test_utilities.h"
+
+/**
+* @brief Execute TSP algorithms and measure the time taken by each of them.
+* @param files - graphs on 'txt' files
+* @param start_node - node identifier
+*/
+void test_tsp_algorithms(const string& start_node, const vector<string>& algorithm_names, bool symmetric_matrix) {  
+  vector<pair<string, unsigned>> files = create_graphs_files( 3,
+                                              pair<unsigned, unsigned>(5, 50),
+                                              pair<unsigned, unsigned>(3, 6));
+  //files.insert(files.begin(), "./input/example1.txt");
+  Table table(algorithm_names);
+  vector<AlgorithmMeasurement> measures;
+  for (unsigned i = 0; i < files.size(); ++i) {
+    measures.clear();
+    measures.push_back(test_algorithm(new GreedyTSP(symmetric_matrix), files[i].first, start_node, files[i].second));
+    measures.push_back(test_algorithm(new BruteForceTSP(symmetric_matrix), files[i].first, start_node, files[i].second));    
+    measures.push_back(test_algorithm(new DynamicProgrammingTSP(symmetric_matrix), files[i].first, start_node, files[i].second));
+    table.AddRow(TableRow(files[i].first, measures, files[i].second));
+  }
+  table.Show();
+  cout << " MODIFICACION: " << endl;
+  table.Show_MOD();
+}
 
 /**
  * @brief Test the performance of a TSP algorithm using the given instance file and starting node.
@@ -20,7 +43,7 @@
  * @param start_node Name of the starting node.
  * @return AlgorithmMeasurement Performance measurement containing the solution value, execution time, and minimum path.
  */
-AlgorithmMeasurement test_algorithm(TSP* tsp_algorithm, const string& filename, const string& start_node) {
+AlgorithmMeasurement test_algorithm(TSP* tsp_algorithm, const string& filename, const string& start_node, unsigned node_amount) {
   auto start = Clock::now();
   tsp_algorithm->CreateFromFile(filename);
   int value = tsp_algorithm->Solve(start_node);
@@ -30,44 +53,26 @@ AlgorithmMeasurement test_algorithm(TSP* tsp_algorithm, const string& filename, 
   auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);  
   double time = duration.count(); //cout << duration.count() << "\t";
   string path = concatenate_strings(tsp_algorithm->GetMinimumPath()); //tsp_algorithm->ShowMinimumPath(); cout << "\t";  
-  return AlgorithmMeasurement(value, time, path);
+  return AlgorithmMeasurement(value, time, path, node_amount);
 }
-
-/**
-* @brief Execute TSP algorithms and measure the time taken by each of them.
-* @param files - graphs on 'txt' files
-* @param start_node - node identifier
-*/
-void test_tsp_algorithms(const string& start_node, const vector<string>& algorithm_names, bool symmetric_matrix) {  
-  vector<string> files = create_graphs_files( 5,
-                                              pair<unsigned, unsigned>(5, 50),
-                                              pair<unsigned, unsigned>(4, 4));
-  //files.insert(files.begin(), "./input/example1.txt");
-  Table table(algorithm_names);
-  vector<AlgorithmMeasurement> measures;
-  for (unsigned i = 0; i < files.size(); ++i) {
-    measures.clear();
-    measures.push_back(test_algorithm(new GreedyTSP(symmetric_matrix), files[i], start_node));
-    measures.push_back(test_algorithm(new BruteForceTSP(symmetric_matrix), files[i], start_node));    
-    measures.push_back(test_algorithm(new DynamicProgrammingTSP(symmetric_matrix), files[i], start_node));
-    table.AddRow(TableRow(files[i], measures));
-  }
-  table.Show();
-}
-
 
 /**
 * @brief Create multiple 'txt' files with 4-sized and random weighted graphs
-* @param graph_amount - number of files to create
+* @param graphs_per_node_amount - number of files to create per node amount
 * @param distances - minimum weight and maximum weight
 * @param nodes - minimum amount of nodes and maximum amount
 * @return list with the names of all files created
 */
-vector<string> create_graphs_files(const unsigned& graphs_amount, const pair<unsigned, unsigned>& distances, const pair<unsigned, unsigned>& nodes) {
-  vector<string> files_created;
-  for (unsigned i = 2; i <= graphs_amount + 1; ++i) {
-    unsigned node_amount = nodes.first + (rand() % nodes.second) - 1;
-    files_created.push_back(create_random_graph("example" + to_string(i) + "_" + to_string(node_amount), node_amount, distances));
+vector<pair<string, unsigned>> create_graphs_files(const unsigned& graphs_per_node_amount, const pair<unsigned, unsigned>& distances, const pair<unsigned, unsigned>& nodes) {
+  vector<pair<string, unsigned>> files_created;
+  for (unsigned i = nodes.first; i <= nodes.second; ++i) {
+    for (unsigned j = 1; j <= graphs_per_node_amount; ++j) { // Para cada cantidad se hacen 3 tests
+      files_created.push_back(
+        pair<string, unsigned> (
+          create_random_graph("example" + to_string(j) + "_" + to_string(i), i, distances),
+          i
+        ));
+    }    
   }
   return(files_created);
 }
@@ -97,6 +102,44 @@ string create_random_graph(const string& filename, unsigned nodes, const pair<un
 	graph_file.close();
   return(file_created);
 }
+// *************************************************************************************************************************************************
+// ************************************************************ MODIFICACION 19/03/2024 ************************************************************
+// *************************************************************************************************************************************************
+/** @brief Display the table. */
+void Table::Show_MOD() {
+  std::sort(node_amounts_.begin(), node_amounts_.end()); // Elimina los elementos duplicados    
+  node_amounts_.erase(std::unique(node_amounts_.begin(), node_amounts_.end()), node_amounts_.end());
+
+  Table new_table(algorithm_names_);
+  vector<AlgorithmMeasurement> measures;
+  vector<pair<int, int>> new_measures;
+
+  for (unsigned i = 0; i < this->node_amounts_.size(); ++i) { // Para cada cantidad de nodos...
+    measures.clear(); 
+    new_measures.clear();
+    new_measures.resize(algorithm_names_.size());   
+    // Para cada fila con ESA cantidad de nodos...  
+    for (const TableRow& t : table_rows_) {
+      if (t.node_amount_ == node_amounts_[i]) {
+        for (unsigned j = 0; j < t.algorithm_measures_.size(); ++j) {
+          new_measures[j].first += t.algorithm_measures_[j].value_;
+          new_measures[j].second += t.algorithm_measures_[j].time_;
+        }
+      }
+    }
+
+    for ( auto& a : new_measures) {
+      a.first /= algorithm_names_.size();
+      a.second /= algorithm_names_.size();
+      measures.push_back(AlgorithmMeasurement(a.first, a.second, to_string(node_amounts_[i]), node_amounts_[i]));
+    }
+    new_table.AddRow(TableRow(to_string(node_amounts_[i]), measures ,node_amounts_[i]));
+  }
+  new_table.Show();
+}
+// *************************************************************************************************************************************************
+// *************************************************************************************************************************************************
+// *************************************************************************************************************************************************
 
 /** @brief Display the table. */
 void Table::Show() {
@@ -110,8 +153,8 @@ void Table::Show() {
   cout << BOLD  << left << "|" << setw(instance_width) << "Instancia" << "|";
   for (const string& name : algorithm_names_) {
     cout << setw(column_width) << name + " (valor)" << "|"
-         << setw(column_width) << name + " (" + kMicro + "s)"    << "|"
-         << setw(column_width) << name + " (path)"  << "|";
+         << setw(column_width) << name + " (" + kMicro + "s)"    << "|";
+         //<< setw(column_width) << name + " (path)"  << "|";
   }
   cout << endl << UNDERLINE << setfill(' ') << setw(total_width) << "" << setfill(' ') << RESET << endl;
 
@@ -125,16 +168,16 @@ void Table::Show() {
       if (measure.time_ == kExecutionTimeCode) {
         value = "-";
         time  = "EXCESIVO";
-        path  = "-";
+        //path  = "-";
       } else {
         value = to_string(measure.value_);
         time = to_string(measure.time_);
-        path  = measure.path_;
+        //path  = measure.path_;
       }
       
       cout << left  << setw(column_width) << value << "|"
-                    << setw(column_width) << time  << "|"
-                    << setw(column_width) << path  << "|";
+                    << setw(column_width) << time  << "|";
+                    //<< setw(column_width) << path  << "|";
     }
     cout << endl;
   }

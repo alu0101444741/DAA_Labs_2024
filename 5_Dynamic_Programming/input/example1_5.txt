@@ -1,0 +1,11 @@
+5
+A B 32
+A C 44
+A D 32
+A E 50
+B C 49
+B D 33
+B E 27
+C D 22
+C E 10
+D E 50

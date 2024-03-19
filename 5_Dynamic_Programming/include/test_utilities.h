@@ -26,6 +26,7 @@ const string kMicro = "\u00B5";
 /** @brief Class representing measurements of an algorithm's performance. */
 class AlgorithmMeasurement {
 public:
+  unsigned node_amount_;
   int value_;
   int time_;
   string path_;
@@ -35,13 +36,14 @@ public:
    * @param time Time taken for execution.
    * @param path Path associated with the measurement.
    */
-  AlgorithmMeasurement(int value, int time, string path) : 
-          value_(value), time_(time), path_(path) {}
+  AlgorithmMeasurement(int value, int time, string path, unsigned node_amount) : 
+          value_(value), time_(time), path_(path), node_amount_(node_amount) {}
 };
 
 /** @brief Class representing a row in the table. */
 class TableRow {
 public:
+    unsigned node_amount_;
     string instance_;
     vector<AlgorithmMeasurement> algorithm_measures_;
     /**
@@ -49,13 +51,14 @@ public:
      * @param instance Instance information.
      * @param algorithm_measures Measurements for each algorithm.
      */
-    TableRow(string instance, vector<AlgorithmMeasurement> algorithm_measures) :
-            instance_(instance), algorithm_measures_(algorithm_measures) {}
+    TableRow(string instance, vector<AlgorithmMeasurement> algorithm_measures, unsigned node_amount) :
+            instance_(instance), algorithm_measures_(algorithm_measures), node_amount_(node_amount) {}
 };
 
 /** @brief Class representing a table. */
 class Table {
 private:
+  vector<unsigned> node_amounts_;
   vector<string> algorithm_names_;
   vector<TableRow> table_rows_;
   unsigned instance_width = 12, column_width = 15;
@@ -72,10 +75,15 @@ public:
    * @brief Add a new row to the table.
    * @param new_row The row to add.
    */
-  void AddRow(const TableRow& new_row) { table_rows_.push_back(new_row); }
+  void AddRow(const TableRow& new_row) {
+    node_amounts_.push_back(new_row.node_amount_);
+    table_rows_.push_back(new_row);
+  }
 
   /** @brief Display the table. */
   void Show();
+
+  void Show_MOD(); 
 };
 
 /**
@@ -85,7 +93,7 @@ public:
  * @param start_node Name of the starting node.
  * @return AlgorithmMeasurement Performance measurement containing the solution value, execution time, and minimum path.
  */
-AlgorithmMeasurement test_algorithm(TSP* tsp_algorithm, const string& filename, const string& start_node);
+AlgorithmMeasurement test_algorithm(TSP* tsp_algorithm, const string& filename, const string& start_node, unsigned node_amount);
 
 /**
 * @brief Execute TSP algorithms and measure the time taken by each of them.
@@ -98,12 +106,12 @@ void test_tsp_algorithms(const string& start_node, const vector<string>& algorit
 
 /**
 * @brief Create multiple 'txt' files with 4-sized and random weighted graphs
-* @param graph_amount - number of files to create
+* @param graphs_per_node_amount - number of files to create per node amount
 * @param distances - minimum weight and maximum weight
 * @param nodes - minimum amount of nodes and maximum amount
 * @return list with the names of all files created
 */
-vector<string> create_graphs_files(const unsigned& graphs_amount, const pair<unsigned, unsigned>& distances, const pair<unsigned, unsigned>& nodes);
+vector<pair<string, unsigned>> create_graphs_files(const unsigned& graphs_per_node_amount, const pair<unsigned, unsigned>& distances, const pair<unsigned, unsigned>& nodes);
 
 /**
 * @brief Create a 'txt' file with a 4-sized and random weighted graph
