@@ -19,20 +19,26 @@
  */
 void test_algorithm(PMSP* pmsp_algorithm, const string& filename, const string& tasks) {
   auto start = Clock::now();
-  pmsp_algorithm->CreateFromFile(kInputFolderPath + tasks + "/" + filename + kInputFileExtension);
-  vector<vector<Task*>> solution = pmsp_algorithm->Solve();
+  pmsp_algorithm->InitializeProblem(kInputFolderPath + tasks + "/" + filename + kInputFileExtension);
+  Solution solution = pmsp_algorithm->Solve();
   auto stop = Clock::now();
   auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
-  show_solution(solution, filename, false);
+  solution.Show("[" + filename + "]", false);
+  
   cout << kFourSpaces + "CPU: " << duration.count() << " " << kMicro << "s" << endl;
+  //for (const auto& a : solution) { cout << " " << a[a.size() - 1]->time_ << " vs"; } cout << endl; // DEBUG
 }
 
 /** @brief Execute PMSP algorithms and measure the time taken by each of them. */
 void test_pmsp_algorithms() {
-  unsigned maximum_iterations = 100;
-  vector<string> machines = {"2", "4", "6", "8"};
-  vector<string> tasks = {"40", "50", "60", "70"};
-  vector<PMSP*> algorithms = {new GreedyPMSP(), new GraspPMSP(maximum_iterations)};
+  vector<string> machines = { "2",  "4",  "6",  "8" };
+  vector<string> tasks    = { "40", "50", "60", "70"};
+  unsigned maximum_iterations = 100, candidate_list_size = 4;
+  vector<PMSP*> algorithms = {
+    new GreedyPMSP(),
+    new GraspPMSP(maximum_iterations, candidate_list_size)
+  };
+
   for (const auto& algorithm : algorithms) {
     cout << "<<< " << algorithm->GetAlgorithmName() << " >>>\n";
     for (const string& m : machines) {

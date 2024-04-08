@@ -13,56 +13,53 @@
 
 #include "greedy_pmsp.h"
 
+// Approach #2 [Apr 8 2024]
 /**
  * @brief Solve the Parallel Machine Scheduling Problem using a greedy algorithm.
- * @return A 2D vector representing the assignment of tasks to machines.
+ * @return Solution representing the assignment of tasks to machines.
  */
-vector<vector<Task*>> GreedyPMSP::Solve() {  
-  vector<vector<Task*>> machine_assignment(machine_amount_);
-  vector<Task*> tasks = tasks_;
+Solution GreedyPMSP::Solve() {
+  vector<Task*> tasks = problem_->GetAllTasks();
+  unsigned machine_amount = problem_->GetNumberOfMachines();
+  vector<vector<Task*>> assignment(machine_amount);
 
-  // Step 1: Choose 'm' initial tasks
+  // Paso 1: Seleccionar las m tareas con menores valores de t0j
+  //vector<pair<int, int>> taskIndexTimePairs(tasks.size());
+  //for (unsigned i = 0; i < tasks.size(); ++i) taskIndexTimePairs[i] = {i, problem_->GetSetupTime(0, i)};
+  //sort(taskIndexTimePairs.begin(), taskIndexTimePairs.end(), [](const auto& a, const auto& b) { return a.second < b.second; });
+
+  // Paso 2: Inicializar S con las m primeras tareas seleccionadas
+  //for (unsigned i = 0; i < machines_amount && i < tasks.size(); ++i) assignment[i].push_back(tasks[taskIndexTimePairs[i].first]);
+  //tasks.erase(tasks.begin(), tasks.begin() + machines_amount);
+
   sort(tasks.begin(), tasks.end(), [&](Task* a, Task* b) {
-    return setup_times_[0][a->id_] < setup_times_[0][b->id_];
+    return problem_->GetSetupTime(0, a->id_) < problem_->GetSetupTime(0, b->id_); //setup_times_[0][a->id_] < setup_times_[0][b->id_];
   });  
-  for (unsigned i = 0; i < machine_amount_; ++i) machine_assignment[i].push_back(tasks[i]); // Step 2: 'm' tasks with the lowest time for 'm' machines
-  tasks.erase(tasks.begin(), tasks.begin() + machine_amount_);
+  for (unsigned i = 0; i < machine_amount; ++i) assignment[i].push_back(tasks[i]); // Step 2: 'm' tasks with the lowest time for 'm' machines
+  tasks.erase(tasks.begin(), tasks.begin() + machine_amount);  
+  
+  unsigned taskIndex = 0;//machine_amount;
+  while (taskIndex < tasks.size()) { // Paso 3: Repetir hasta asignar todas las tareas
+    vector<vector<Task*>> best_solution = assignment;
+    int best_delta_TCT = INT_MAX; //int best_machine = -1, best_position = -1;
 
-  // Step 3: Repeat
-  while (!tasks.empty()) {
-    vector<vector<Task*>> best_assignment = machine_assignment;    
-    int minimum_increment = INT_MAX, best_machine = -1, best_task_index = -1;
-
-    // Step 5: Get the best task-machine assignment (la tarea-maquina-posicion que minimiza el incremento del TCT)
-    for (unsigned machine = 0; machine < machine_amount_; ++machine) {
-      for (unsigned task_index = 0; task_index < tasks.size(); ++task_index) {
-        Task* current_task = tasks[task_index];
-        if (find(machine_assignment[machine].begin(), machine_assignment[machine].end(), current_task) != machine_assignment[machine].end()) {          
-          continue; // Task already assigned to the current machine
-        }
-        // Calculate the setup time for inserting the current task into the current machine.
-        // If the machine is empty, setup time is 0; otherwise, retrieve the setup time from the matrix for the last task on the machine and the current task.
-        int setup_time = (machine_assignment[machine].empty()) ? 0 : setup_times_[machine_assignment[machine].back()->id_][current_task->id_];
-        int completion_time = CalculateCompletionTime(machine_assignment[machine]) + setup_time + current_task->time_;
-
-        int increment = completion_time - CalculateCompletionTime(machine_assignment[machine]);
-        if (increment < minimum_increment) {
-          minimum_increment = increment;
-          best_machine = machine;
-          best_task_index = task_index;
+    // Buscar la tarea-máquina-posición que minimiza el incremento del TCT
+    for (unsigned i = 0; i < machine_amount; ++i) {
+      for (unsigned j = 0; j <= assignment[i].size(); ++j) {
+        vector<vector<Task*>> current_solution = assignment;
+        current_solution[i].insert(current_solution[i].begin() + j, tasks[taskIndex]);
+        int delta_TCT = CalculateTCT(current_solution) - CalculateTCT(assignment);
+        if (delta_TCT < best_delta_TCT) {
+          best_delta_TCT = delta_TCT;
+          best_solution = current_solution;
+          //best_machine = i; //best_position = j;
         }
       }
-    }
-    if (best_machine != -1 && best_task_index != -1) { // Step 6: Insert the task in the corresponding machine and update S*
-      machine_assignment[best_machine].push_back(tasks[best_task_index]);
-      tasks.erase(tasks.begin() + best_task_index); // Delete the task from the list
-    }
-
-    // Paso 7: Verificar si todas las tareas han sido asignadas a alguna máquina
-    //for (const auto& machineTasks : machine_assignment) {
-    //  if (machineTasks.size() != tasks.size() / machine_amount_) break;
-    //}
-    //if (tasks.empty()) break;
+    } // Actualizar la solución
+    assignment = best_solution;
+    ++taskIndex;
+    //cout << "\tCurrent BEST solution\t"; Solution s(assignment); s.Show(false, ""); cout << endl; // DEBUG
   }
-  return machine_assignment;
+  return Solution(assignment);
 }
+

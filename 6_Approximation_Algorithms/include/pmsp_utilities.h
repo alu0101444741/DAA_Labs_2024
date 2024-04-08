@@ -59,12 +59,4 @@ bool vector_contains(vector<T> array, const T& element);
 */
 void show_vector(vector<int> array);
 
-/**
- * @brief Display the solution of the parallel machine scheduling problem.
- * @param solution The solution containing the assignment of tasks to machines.
- * @param filename The name of the instance.
- * @param show_task_info Flag indicating whether to display task information.
- */
-void show_solution(const vector<vector<Task*>>& solution, const string& filename, bool show_task_info);
-
 #endif // PMSP_UTILITIES_H_ 

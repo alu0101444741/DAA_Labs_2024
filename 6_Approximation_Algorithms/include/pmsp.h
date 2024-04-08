@@ -17,43 +17,43 @@
 #include <algorithm>
 #include <sstream>
 #include <regex>
+
 #include "pmsp_utilities.h"
+#include "problem.h"
+#include "solution.h"
 
 using namespace std;
 
 /** @brief Base class for any other Parallel Machine Scheduling Problem (PMSP) solver. */
 class PMSP {
 protected:
-  unsigned machine_amount_;
-  vector<Task*> tasks_;
-  vector<vector<int>> setup_times_;
+  Problem* problem_;
+  Solution* solution_;
   string algorithm_name_;
 public:
   /** @brief Constructor for the Parallel Machine Scheduling Problem (PMSP) solver. */
-  PMSP() : algorithm_name_("PMSP") {}
+  PMSP() : algorithm_name_("PMSP") { }
 
   /**
    * @brief Solve the problem and return the assignment of tasks to machines.
-   * @return A 2D vector representing the assignment of tasks to machines.
+   * @return Solution representing the assignment of tasks to machines.
    */
-  virtual vector<vector<Task*>> Solve() = 0;
+  virtual Solution Solve() = 0;
 
   /**
-   * @brief Create the PMSP instance from a 'txt' file. 
-   * @param filename - name/path of the file
+   * @brief Initializes the problem by creating it from a file. 
+   * @param filename The name of the file containing the problem data.
    */
-  void CreateFromFile(const string& filename);
+  void InitializeProblem(const string& filename) { problem_->CreateFromFile(filename); }
 
   /** @brief Prints the PMSP information: machine amount, tasks and setup times */
-  void ShowInfo();
+  void ShowInfo() { problem_->ShowInfo(); }
 
   /**
    * @brief Get the name of the algorithm.
    * @return The name of the algorithm.
    */
-  string GetAlgorithmName() {
-    return algorithm_name_;
-  }
+  string GetAlgorithmName() { return algorithm_name_; }
 
 protected:
   /**
@@ -64,10 +64,10 @@ protected:
   int GetTaskIndex(int id) const;
 
   /**
-   * @brief Calculate the completion time of tasks on a machine.
-   * @param machine_tasks The list of tasks assigned to a machine.
+   * @brief Calculate the completion time of an assignment.
+   * @param assignment The list of tasks assigned to each machine.
    * @return The completion time of tasks on the machine.
    */
-  int CalculateCompletionTime(const vector<Task*>& machine_tasks);
+  int CalculateTCT(vector<vector<Task*>> assignment);
 };
 #endif // PMSP_H_

@@ -19,13 +19,13 @@
 class GreedyPMSP: public PMSP {
 public:  
   /** @brief Constructor for GreedyPMSP. */
-  GreedyPMSP() { algorithm_name_ = "Greedy"; }
+  GreedyPMSP() { algorithm_name_ = "Greedy"; problem_ = new Problem(); }  
 
   /**
    * @brief Solve the Parallel Machine Scheduling Problem using a greedy algorithm.
-   * @return A 2D vector representing the assignment of tasks to machines.
+   * @return Solution representing the assignment of tasks to machines.
    */
-  vector<vector<Task*>> Solve();
+  Solution Solve();  
 };
 
 #endif /* GREEDY_PMSP_H_ */
