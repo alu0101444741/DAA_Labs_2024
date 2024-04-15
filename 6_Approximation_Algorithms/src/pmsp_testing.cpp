@@ -31,12 +31,13 @@ void test_algorithm(PMSP* pmsp_algorithm, const string& filename, const string& 
 
 /** @brief Execute PMSP algorithms and measure the time taken by each of them. */
 void test_pmsp_algorithms() {
-  vector<string> machines = { "2",  "4",  "6",  "8" };
-  vector<string> tasks    = { "40", "50", "60", "70"};
-  unsigned maximum_iterations = 100, candidate_list_size = 4;
+  vector<string> machines = { "2",  "4",  "6",/*  "8" */};
+  vector<string> tasks    = { "40", "50", "60",/* "70"*/};
+  unsigned maximum_iterations = 50, candidate_list_size = 10;
   vector<PMSP*> algorithms = {
     new GreedyPMSP(),
-    new GraspPMSP(maximum_iterations, candidate_list_size)
+    new GraspPMSP(maximum_iterations, candidate_list_size, true),
+    new GvnsPMSP(10, candidate_list_size)
   };
 
   for (const auto& algorithm : algorithms) {

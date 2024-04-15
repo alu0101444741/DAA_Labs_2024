@@ -18,6 +18,7 @@
  * @return The completion time of tasks on the machine.
  */
 // Approach #2 [Apr 8 2024]
+/*
 int PMSP::CalculateTCT(vector<vector<Task*>> assignment) {
   unsigned machines_amount = assignment.size();
   int TCT = 0;
@@ -39,7 +40,7 @@ int PMSP::CalculateTCT(vector<vector<Task*>> assignment) {
   }
   return TCT;
 }
-
+*/
 
 /**
  * @brief Get the index of a task with the given ID in the task list.

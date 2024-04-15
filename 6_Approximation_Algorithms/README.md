@@ -1,10 +1,17 @@
 ### Práctica 7: PMSP. Algoritmos aproximados
 
 #### Entrega 09/04/2024
-asdasd.
+Nada que reseñar.
 
-##### asdasdasd:
-* asdasd: asdasdasd.
+##### Clase Solución:
+* General: Incluir las operaciones que se realizan en la misma (insertar, swap, calcularTCT) para simplificar su manipulación y mejorar la legibilidad de los bucles de los algoritmos. **[Hecho]**
+* TCT: Muchas veces el ćalculo o actualización del TCT incluye cálculos innecesarios. Por ello, se incluirá un atributo total_TCT y el TCT de cada máquina. **[Hecho]** Se actualizará el valor de cada máquina cada vez que se realice un movimiento en ella.
+
+##### Porcentajes de mejora:
+* GRASP: Para cada iteración, almacenar el porcentaje de mejora de la solución con respecto a su mejora (LocalSearch). **[No hecho]** Las búsquedas locales no presentan mejoras.
+
+
+
 
 #### Entrega 02/04/2024
 Suspenso debido mayormente a un insuficiente entendimiento del algoritmo voraz.

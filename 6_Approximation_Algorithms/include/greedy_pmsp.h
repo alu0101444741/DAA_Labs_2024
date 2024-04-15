@@ -7,7 +7,7 @@
  * @author Roberto Carrazana Pernia
  * @date: Apr 1 2024
  *
- * @brief Greesy PMSP solver class definition.
+ * @brief Greedy PMSP solver class definition.
  * 
  */
 #ifndef GREEDY_PMSP_H_

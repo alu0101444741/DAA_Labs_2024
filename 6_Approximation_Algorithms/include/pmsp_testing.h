@@ -13,7 +13,7 @@
 #define TEST_UTILITIES_H_
 
 #include "greedy_pmsp.h"
-#include "grasp_pmsp.h"
+#include "gvns_pmsp.h"
 
 const string kInputFolderPath = "./input/tasks_";
 const string kInputFileExtension = ".txt";
