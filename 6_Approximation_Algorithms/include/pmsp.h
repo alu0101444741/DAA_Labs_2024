@@ -19,7 +19,6 @@
 #include <regex>
 
 #include "pmsp_utilities.h"
-//#include "problem.h"
 #include "solution.h"
 
 using namespace std;
@@ -42,7 +41,7 @@ public:
 
   /**
    * @brief Initializes the problem by creating it from a file. 
-   * @param filename The name of the file containing the problem data.
+   * @param filename - The name of the file containing the problem data.
    */
   void InitializeProblem(const string& filename) { problem_->CreateFromFile(filename); }
 
@@ -57,23 +56,10 @@ public:
 
   /**
    * @brief Setter for the problem.
-   * @param problem The name of the algorithm.
+   * @param problem - The name of the algorithm.
    */
   void SetProblem(Problem* problem) { problem_ = problem; }
 
-protected:
-  /**
-   * @brief Get the index of a task with the given ID in the task list.
-   * @param id The ID of the task to find.
-   * @return The index of the task in the list if found, otherwise -1.
-   */
-  int GetTaskIndex(int id) const;
-
-  /**
-   * @brief Calculate the completion time of an assignment.
-   * @param assignment The list of tasks assigned to each machine.
-   * @return The completion time of tasks on the machine.
-   */
-  //int CalculateTCT(vector<vector<Task*>> assignment);
+  Problem* GetProblem() const { return problem_; }
 };
 #endif // PMSP_H_

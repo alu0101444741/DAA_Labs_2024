@@ -18,41 +18,33 @@
  */
 Solution GraspPMSP::Solve() {
   vector<Task*> tasks = problem_->GetAllTasks();
-  Solution assignment(problem_); //vector<vector<Task*>> assignment;
+  Solution assignment(problem_);
 
   int best_completion_time = INT_MAX;
 
   vector<int> tct_improvements(maximum_iterations_);  
   
   sort(tasks.begin(), tasks.end(), [&](Task* a, Task* b) {
-    return (problem_->GetSetupTime(0, a->id_) + a->time_) < (problem_->GetSetupTime(0, b->id_) + b->time_) ; //t[0][j]
+    return (problem_->GetSetupTime(0, a->id_) + a->time_) < (problem_->GetSetupTime(0, b->id_) + b->time_) ; //Sorted by t[0][j]
   }); 
 
   for (unsigned iteration = 0; iteration < maximum_iterations_; ++iteration) { // GRASP loop
-    //cout << "Building initial solution...\n"; // DEBUG
     Solution current_solution = ConstructInitialSolution(problem_, tasks, candidate_list_size_);
-
-    //Solution current_solution(problem_); //vector<vector<Task*>> current_solution(machine_amount);
-    //ConstructInitialSolution(current_solution, tasks); // 
 
     tct_improvements[iteration] = current_solution.GetTotalCompletionTime();
     
-    //cout << "[Local Search]\n"; // DEBUG
-    if (perform_local_search_) LocalSearch_InsercionInter(current_solution, problem_, iterations_with_no_improvement_);
-    //if (perform_local_search_) LocalSearch_SwapInter(current_solution, problem_, iterations_with_no_improvement_);
-    //if (perform_local_search_) LocalSearch_InsercionIntra(current_solution, problem_, iterations_with_no_improvement_);    
-    //if (perform_local_search_) LocalSearch_SwapIntra(current_solution, problem_, iterations_with_no_improvement_);
+    //current_solution = LocalSearch(current_solution, local_search_type_, iterations_with_no_improvement_);
+    current_solution = LocalSearchMainStructure(current_solution, local_search_type_, iterations_with_no_improvement_);
 
-    // Calculate completion time of the current solution    
-    int current_completion_time = current_solution.GetTotalCompletionTime(); // CalculateTCT(current_solution);
+    // Calculate completion time of the current solution
+    int current_completion_time = current_solution.GetTotalCompletionTime();
 
-    tct_improvements[iteration] = tct_improvements[iteration] - current_completion_time;//max(tct_improvements[iteration] - current_completion_time, 0);
+    tct_improvements[iteration] = tct_improvements[iteration] - current_completion_time;
     // Update the best solution
     if (current_completion_time < best_completion_time) {
       assignment = current_solution;
       best_completion_time = current_completion_time;
     }
-    //int t = 0; for(const auto& a : assignment) t += a.size(); cout << "Current task amount: " << t << endl;  // DEBUG
   }  
 /* 
   // Local search average improvement DEBUG

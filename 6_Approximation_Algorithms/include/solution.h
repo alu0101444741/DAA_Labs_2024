@@ -108,6 +108,8 @@ public:
    */
   Task* GetTask(unsigned machine_index, unsigned position) const { return solution_[machine_index][position]; }
 
+  Problem* GetProblem() const { return problem_; }
+
   /**
    * @brief Display the solution of the parallel machine scheduling problem.
    * @param tag String that will preceed the total time console output

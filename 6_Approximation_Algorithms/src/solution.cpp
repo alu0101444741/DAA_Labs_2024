@@ -28,19 +28,8 @@ void Solution::UpdateTotalTCT() {
 void Solution::UpdateMachineTCT(unsigned machine_index) {
   int machine_completion_time = 0, setup_time = 0;
   for (unsigned i = 0; i < solution_[machine_index].size(); ++i) {
-    /*
-      Tiempo de setup s[i][j] para procesar la tarea j justo después de la tarea i.
-      (!) s[i->id][j->id] para task_anterior(i) y task_actual(j) 
-      Con sij != sji, en general.
-      Hay un tiempo de setup s0j para procesar la primera tarea en cada máquina.
-    */
     setup_time = problem_->GetSetupTime((i == 0) ? 0 : solution_[machine_index][i - 1]->id_, solution_[machine_index][i]->id_);
     machine_completion_time += (solution_[machine_index][i]->time_ + setup_time);
-    
-
-
-    //machine_completion_time += solution_[machine_index][i]->time_ + setup_time;
-    //setup_time = (i == 0) ? 0 : problem_->GetSetupTime(machine_index, i);
   }
   machines_tct_[machine_index] = machine_completion_time;
   if (machines_tct_[machine_index] > total_tct_) {

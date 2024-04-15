@@ -52,7 +52,7 @@ void Problem::CreateFromFile(const string& filename) {
         }
       }
     }
-    file.close(); //cout << " <FIN>\n"; // DEBUG 
+    file.close();
   } else {
     cerr << "Error al abrir el archivo: " << filename << endl;
   }
@@ -66,7 +66,7 @@ void Problem::ShowInfo() {
 
   unsigned columns = (setup_times_.size() > 0) ? setup_times_[0].size() : 0;
   cout << "\nSetup times [ " << setup_times_.size() << " x " << columns << " ]\n";
-  //bool shorter_info = (task_amount_ > 10);
+
   for (unsigned i = 0; i < setup_times_.size(); ++i) {
     show_vector(setup_times_[i]);
   }  

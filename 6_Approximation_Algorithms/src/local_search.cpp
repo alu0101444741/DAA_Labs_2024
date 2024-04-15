@@ -19,23 +19,23 @@
  *  For each remaining task, create the LRC and select a random one. This selected task will be added
  * to the machine and position that minimize the TCT of the assignment.
  * 
- * @param problem - problem information
- * @param tasks - task list
- * @param candidate_list_size
+ * @param problem - Problem information
+ * @param tasks - Task list
+ * @param candidate_list_size - Maximum candidate list size
  */
 Solution ConstructInitialSolution(Problem* problem, const vector<Task*>& tasks, unsigned candidate_list_size) {  
   unsigned machine_amount = problem->GetNumberOfMachines();
   Solution current_solution(problem);
   vector<bool> tasks_used(tasks.size(), false);
   for (unsigned i = 0; i < machine_amount; ++i) { // 'm' tasks with the lowest time for 'm' machines
-    current_solution.PushbackTaskToMachine(i, tasks[i]); //current_solution[i].push_back(tasks[i]);
+    current_solution.PushbackTaskToMachine(i, tasks[i]);
     tasks_used[i] = true;
   }
 
   unsigned taskIndex = machine_amount;
   while (taskIndex < tasks.size()) { // Paso 3: Repetir hasta asignar todas las tareas    
-    Solution best_solution(current_solution); //vector<vector<Task*>> best_solution = current_solution;
-    int best_delta_TCT = INT_MAX; //int best_machine = -1, best_position = -1;
+    Solution best_solution(current_solution);
+    int best_delta_TCT = INT_MAX;
 
     // Create candidate list
     vector<Task*> candidates(0);
@@ -55,96 +55,199 @@ Solution ConstructInitialSolution(Problem* problem, const vector<Task*>& tasks, 
     }
     // Buscar la tarea-máquina-posición que minimiza el incremento del TCT
     for (unsigned i = 0; i < machine_amount; ++i) {
-      for (unsigned j = 0; j <= current_solution.GetMachineSize(i)/*current_solution[i].size()*/; ++j) {        
-        Solution current_assignment(current_solution); //vector<vector<Task*>> current_assignment = current_solution;
-        //current_assignment[i].insert(current_assignment[i].begin() + j, selected_task);
-        current_assignment.InsertTaskInPosition(i, j, selected_task);
-        //int delta_TCT = CalculateTCT(current_assignment) - CalculateTCT(current_solution);
+      //for (unsigned j = 0; j <= current_solution.GetMachineSize(i); ++j) {        
+        Solution current_assignment(current_solution);
+        //current_assignment.InsertTaskInPosition(i, j, selected_task);
+        current_assignment.PushbackTaskToMachine(i, selected_task);
         int delta_TCT = current_assignment.GetTotalCompletionTime() - current_solution.GetTotalCompletionTime();
         if (delta_TCT < best_delta_TCT) {
           best_delta_TCT = delta_TCT;
           best_solution = current_assignment;
-          //best_machine = i; //best_position = j;
         }
-      }
+      //}
     } // Actualizar la solución
     current_solution = best_solution;
     ++taskIndex;
-    //cout << "\tCurrent BEST solution\t"; Solution s(assignment); s.Show(false, ""); cout << endl; // DEBUG
   }
   return current_solution;
 }
 
 /**
- * @brief Perform local search to improve the given solution. (Inserción INTER)
- * @param solution The solution to be improved.
+ * @brief Local search algorithm to improve a given solution.
+ * @param solution - The initial solution to be improved.
+ * @param neighborhood The neighborhood structure to be used:
+ *                     1 for Insertion Intra (Intra-machine insertion),
+ *                     2 for Insertion Inter (Inter-machine insertion),
+ *                     3 for Swap Intra (Intra-machine swap),
+ *                     any other value defaults to Swap Inter (Inter-machine swap).
+ * @param iterations_with_no_improvement Number of iterations with no improvement to stop the search.
+ * @return The local optimum solution found.
  */
-//void GraspPMSP::LocalSearch_InsercionInter(vector<vector<Task*>>& solution) {
-void LocalSearch_InsercionInter(Solution& solution, Problem* problem, unsigned iterations_with_no_improvement) {
-  bool debug = false; // DEBUG
-  if (debug) cout << "InsercionInter\n"; // DEBUG
-  //vector<vector<Task*>> current_solution = solution; // Make a copy of the solution
+Solution LocalSearch(const Solution& solution, unsigned neighborhood, unsigned iterations_with_no_improvement) {
+  //cout << kFourSpaces + "Executing LocalSearch type: " << neighborhood << endl;
+  Solution local_optimum = solution;
+  switch (neighborhood) {
+    case 1: LocalSearch_InsertionIntra(local_optimum, iterations_with_no_improvement); break;
+    case 2: LocalSearch_SwapIntra(local_optimum, iterations_with_no_improvement); break;
+    case 3: LocalSearch_InsertionInter(local_optimum, iterations_with_no_improvement); break;
+    default: LocalSearch_SwapInter(local_optimum, iterations_with_no_improvement); break;
+  }
+  return local_optimum;                  
+}
 
-  Solution current_solution(problem, solution);
-
-  int best_tct = current_solution.GetTotalCompletionTime(); // CalculateTCT(current_solution);
+// ********************************** EXPERIMENTO ********************************** 
+Solution LocalSearchMainStructure(const Solution& solution, unsigned neighborhood, unsigned iterations_with_no_improvement) {
+  Problem* problem = solution.GetProblem();
+  Solution current_solution(problem, solution); // Make a copy of the solution
+  Solution local_optimum(problem, solution);
+  int best_tct = current_solution.GetTotalCompletionTime();
   unsigned machine_amount = current_solution.GetMachineAmount();
-  
-  if (debug) cout << "  [LS_I_Inter] Solution TCT" << best_tct << endl; // DEBUG
 
   bool improved = true; // Flag to check if the solution has been improved
   unsigned no_improvement_counter = 0;
   while (improved || no_improvement_counter < iterations_with_no_improvement) {
     improved = false; // No improvement assumption
-    
-    for (unsigned machine_index = 0; machine_index < machine_amount; ++machine_index) { // Iterar sobre cada tarea en la solución actual
-      // Previously [Apr 9 2024]: ... task_index < current_solution[machine_index].size() ... 
+
+    switch (neighborhood) {
+      case 1: loca1(local_optimum, current_solution, improved, machine_amount, best_tct); break;
+      case 2: loca2(local_optimum, current_solution, improved, machine_amount, best_tct); break;
+      case 3: loca3(local_optimum, current_solution, improved, machine_amount, best_tct); break;
+      default: loca4(local_optimum, current_solution, improved, machine_amount, best_tct); break;
+    } 
+
+    if (improved) no_improvement_counter = 0;
+    else no_improvement_counter ++;
+  }
+  return local_optimum;
+}
+
+void loca1 (Solution& solution, Solution& current_solution, bool& improved, unsigned machine_amount, int& best_tct) {
+  for (unsigned machine_index = 0; machine_index < machine_amount; ++machine_index) { // Iterar sobre cada tarea en la solución actual
+    unsigned machine_size = current_solution.GetMachineSize(machine_index);
+    for (unsigned task_index = 0; task_index < machine_size; ++task_index) { // Iterar sobre todas las posiciones para insertar la tarea actual en la nueva máquina        
+      for (unsigned position = 0; position < machine_size; ++position) {
+        if (task_index == position) continue; // Iterar sobre el resto de las posiciones de la misma máquina
+        // Intercambiar la tarea actual, con la tarea en la nueva posición
+        current_solution.SwapTasksInPosition(machine_index, machine_index, task_index, position);
+        int current_tct = current_solution.GetTotalCompletionTime();          
+        
+        // cout << "Movement TCT: " << current_tct << " vs Best TCT:" << best_tct << endl;
+
+        // Si el nuevo TCT es mejor que el actual, actualizar la solución y marcar la mejora
+        if (current_tct < best_tct) {  cout << "¡Improvement! "; // DEBUG 
+          best_tct = current_tct;
+          improved = true;
+          solution = current_solution;
+        } else { // Si el nuevo TCT no es mejor, revertir el movimiento
+          current_solution.SwapTasksInPosition(machine_index, machine_index, task_index, position);
+        }
+      }
+      if (improved) break; // Si se ha mejorado la solución, salir del bucle interno
+    }             
+    if (improved) break; // Si se ha mejorado la solución, salir del bucle externo
+  }
+}
+
+void loca2 (Solution& solution, Solution& current_solution, bool& improved, unsigned machine_amount, int& best_tct) {
+  for (unsigned machine_index = 0; machine_index < machine_amount; ++machine_index) { // Iterar sobre cada tarea en la solución actual
+    unsigned machine_size = current_solution.GetMachineSize(machine_index);
+    for (unsigned task_index = 0; task_index < machine_size; ++task_index) { // Iterar sobre todas las posiciones para insertar la tarea actual en la nueva máquina        
+      for (unsigned position = 0; position < machine_size; ++position) {
+        if (task_index == position) continue; // Iterar sobre el resto de las posiciones de la misma máquina
+        // Intercambiar la tarea actual, con la tarea en la nueva posición
+        current_solution.SwapTasksInPosition(machine_index, machine_index, task_index, position);
+        int current_tct = current_solution.GetTotalCompletionTime();          
+        
+        // cout << "Movement TCT: " << current_tct << " vs Best TCT:" << best_tct << endl;
+
+        // Si el nuevo TCT es mejor que el actual, actualizar la solución y marcar la mejora
+        if (current_tct < best_tct) {  cout << "¡Improvement! "; // DEBUG 
+          best_tct = current_tct;
+          improved = true;
+          solution = current_solution;
+        } else { // Si el nuevo TCT no es mejor, revertir el movimiento
+          current_solution.SwapTasksInPosition(machine_index, machine_index, task_index, position);
+        }
+      }
+      if (improved) break; // Si se ha mejorado la solución, salir del bucle interno
+    }             
+    if (improved) break; // Si se ha mejorado la solución, salir del bucle externo
+  }
+}
+
+void loca3 (Solution& solution, Solution& current_solution, bool& improved, unsigned machine_amount, int& best_tct) {
+  for (unsigned machine_index = 0; machine_index < machine_amount; ++machine_index) { // Iterar sobre cada tarea en la solución actual
       for (unsigned task_index = 0; task_index < current_solution.GetMachineSize(machine_index); ++task_index) {        
         Task* current_task = current_solution.GetTask(machine_index, task_index); // Guardar la tarea actual para moverla posteriormente
-        // Previously [Apr 9 2024]: current_solution[machine_index][task_index]; 
                 
         current_solution.EraseTaskInPosition(machine_index, task_index); // Eliminar la tarea actual de su posición actual
-        // Previously [Apr 9 2024]: current_solution[machine_index].erase(current_solution[machine_index].begin() + task_index);
         
         for (unsigned new_machine_index = 0; new_machine_index < machine_amount; ++new_machine_index) { // Iterar sobre todas las máquinas
-          if (new_machine_index == machine_index) continue; // Iterar sobre todas las posiciones en OTRA máquina 
-          // Previously [Apr 9 2024]: ... position < current_solution[new_machine_index].size() ...          
+          if (new_machine_index == machine_index) continue; // Iterar sobre todas las posiciones en OTRA máquina         
           for (unsigned position = 0; position < current_solution.GetMachineSize(new_machine_index); ++position) {
             // Insertar la tarea actual en la nueva posición y calcular el nuevo TCT            
             current_solution.InsertTaskInPosition(new_machine_index, position, current_task);
-            // Previously [Apr 9 2024]: current_solution[new_machine_index].insert(current_solution[new_machine_index].begin() + position, current_task);
 
-            int current_tct = current_solution.GetTotalCompletionTime(); // Previously [Apr 9 2024]: CalculateTCT(current_solution);
+            int current_tct = current_solution.GetTotalCompletionTime();
+            
+            //if (debug) cout << "Movement TCT: " << current_tct << " vs Best TCT:" << best_tct << endl; // DEBUG
+
             // Si el nuevo TCT es mejor que el actual, actualizar la solución y marcar la mejora
-            if (debug) cout << "Movement TCT: " << current_tct << " vs Best TCT:" << best_tct << endl; // DEBUG
             if (current_tct < best_tct) { cout << "¡Improvement! "; // DEBUG
               best_tct = current_tct;
               improved = true;
               solution = current_solution;
             } else { // Si el nuevo TCT no es mejor, revertir el movimiento              
               current_solution.EraseTaskInPosition(new_machine_index, position);
-              // Previously [Apr 9 2024]: current_solution[new_machine_index].erase(current_solution[new_machine_index].begin() + position);
             }
           }
         }
         if (improved) break; // Si se ha mejorado la solución, salir del bucle interno
         // Si no se ha mejorado la solución, restaurar la tarea eliminada a su posición original        
         current_solution.InsertTaskInPosition(machine_index, task_index, current_task);
-        // Previously [Apr 9 2024]: current_solution[machine_index].insert(current_solution[machine_index].begin() + task_index, current_task);
       }             
       if (improved) break; // Si se ha mejorado la solución, salir del bucle externo
     }
-    if (improved) no_improvement_counter = 0;
-    else no_improvement_counter ++;
-  }
-  //cout << "Local search finished. Counter: " << no_improvement_counter << endl;
 }
 
+void loca4 (Solution& solution, Solution& current_solution, bool& improved, unsigned machine_amount, int& best_tct) {
+  for (unsigned machine_index = 0; machine_index < machine_amount; ++machine_index) { // Iterar sobre cada tarea en la solución actual
+      for (unsigned task_index = 0; task_index < current_solution.GetMachineSize(machine_index); ++task_index) {
+        
+        for (unsigned new_machine_index = 0; new_machine_index < machine_amount; ++new_machine_index) { // Iterar sobre el resto de máquinas
+          if (new_machine_index == machine_index) continue; // Iterar sobre todas las posiciones para insertar la tarea actual en la nueva máquina          
+          for (unsigned position = 0; position < current_solution.GetMachineSize(new_machine_index); ++position) {
+            // Intercambiar la tarea actual, con la tarea en la nueva posición
+            current_solution.SwapTasksInPosition(machine_index, new_machine_index, task_index, position);
+            int current_tct = current_solution.GetTotalCompletionTime();
+            
+            // Si el nuevo TCT es mejor que el actual, actualizar la solución y marcar la mejora
+            // cout << "Movement TCT: " << current_tct << " vs Best TCT:" << best_tct << endl;
+            if (current_tct < best_tct) { cout << "¡Improvement! "; // DEBUG 
+              best_tct = current_tct;
+              improved = true;
+              solution = current_solution;
+            } else { // Si el nuevo TCT no es mejor, revertir el movimiento
+              current_solution.SwapTasksInPosition(machine_index, new_machine_index, task_index, position);
+            }
+          }
+        }
+        if (improved) break; // Si se ha mejorado la solución, salir del bucle interno
+      }             
+      if (improved) break; // Si se ha mejorado la solución, salir del bucle externo
+    }
+}
+// ***********************************************************************************
+// ***********************************************************************************
+
 /**
- * @brief Perform local search to improve the given solution. (Inserción INTRA)
- * @param solution The solution to be improved.
+ * @brief Perform local search to improve the given solution by moving one task from a machine to another position
+ * in the same machine.
+ * @param solution - The solution to be improved.
+ * @param iterations_with_no_improvement - Maximum iterations with no improvement until the loop is finished
  */
-void LocalSearch_InsercionIntra(Solution& solution, Problem* problem, unsigned iterations_with_no_improvement) {  //cout << "InsercionIntra\n"; // DEBUG
+void LocalSearch_InsertionIntra(Solution& solution, unsigned iterations_with_no_improvement) {
+  Problem* problem = solution.GetProblem();
   Solution current_solution(problem, solution); // Make a copy of the solution
   int best_tct = current_solution.GetTotalCompletionTime();
   unsigned machine_amount = current_solution.GetMachineAmount();
@@ -161,27 +264,24 @@ void LocalSearch_InsercionIntra(Solution& solution, Problem* problem, unsigned i
         // Eliminar la tarea actual de su posición actual
         current_solution.EraseTaskInPosition(machine_index, task_index);
 
-        // Iterar sobre todas las máquinas para evaluar posibles movimientos
-        //for (unsigned new_machine_index = 0; new_machine_index < current_solution.size(); ++new_machine_index) {
-          // Iterar sobre todas las posiciones para insertar la tarea actual en la nueva máquina
-          for (unsigned position = 0; position <= current_solution.GetMachineSize(machine_index); ++position) {
-            if (task_index == position) continue;
+        // Iterar sobre todas las posiciones para insertar la tarea actual en la nueva máquina
+        for (unsigned position = 0; position <= current_solution.GetMachineSize(machine_index); ++position) {
+          if (task_index == position) continue;
 
-            // Insertar la tarea actual en la nueva posición y calcular el nuevo TCT
-            current_solution.InsertTaskInPosition(machine_index, position, current_task);
-            int current_tct = current_solution.GetTotalCompletionTime();
+          // Insertar la tarea actual en la nueva posición y calcular el nuevo TCT
+          current_solution.InsertTaskInPosition(machine_index, position, current_task);
+          int current_tct = current_solution.GetTotalCompletionTime();
 
-            // Si el nuevo TCT es mejor que el actual, actualizar la solución y marcar la mejora
-            // cout << "Movement TCT: " << current_tct << " vs Best TCT:" << best_tct << endl;
-            if (current_tct < best_tct) { cout << "¡Improvement! "; // DEBUG              
-              best_tct = current_tct;
-              improved = true;
-              solution = current_solution;
-            } else { // Si el nuevo TCT no es mejor, revertir el movimiento
-              current_solution.EraseTaskInPosition(machine_index, position);
-            }
+          // Si el nuevo TCT es mejor que el actual, actualizar la solución y marcar la mejora
+          // cout << "Movement TCT: " << current_tct << " vs Best TCT:" << best_tct << endl;
+          if (current_tct < best_tct) { cout << "¡Improvement! "; // DEBUG              
+            best_tct = current_tct;
+            improved = true;
+            solution = current_solution;
+          } else { // Si el nuevo TCT no es mejor, revertir el movimiento
+            current_solution.EraseTaskInPosition(machine_index, position);
           }
-        //}
+        }
         if (improved) break; // Si se ha mejorado la solución, salir del bucle interno
         // Si no se ha mejorado la solución, restaurar la tarea eliminada a su posición original
         current_solution.InsertTaskInPosition(machine_index, task_index, current_task);
@@ -194,57 +294,13 @@ void LocalSearch_InsercionIntra(Solution& solution, Problem* problem, unsigned i
 }
 
 /**
- * @brief Perform local search to improve the given solution. (Swap INTER)
- * @param solution The solution to be improved.
+ * @brief Perform local search to improve the given solution by swapping one task from a machine with another task
+ * assigned to the same machine.
+ * @param solution - The solution to be improved.
+ * @param iterations_with_no_improvement - Maximum iterations with no improvement until the loop is finished
  */
-void LocalSearch_SwapInter(Solution& solution, Problem* problem, unsigned iterations_with_no_improvement) { //cout << "SwapInter\n"; // DEBUG
-  Solution current_solution(problem, solution); // Make a copy of the solution
-  int best_tct = current_solution.GetTotalCompletionTime();
-  unsigned machine_amount = current_solution.GetMachineAmount();
-
-  bool improved = true; // Flag to check if the solution has been improved
-  unsigned no_improvement_counter = 0;
-  while (improved || no_improvement_counter < iterations_with_no_improvement) {
-    improved = false; // No improvement assumption
-    
-    for (unsigned machine_index = 0; machine_index < machine_amount; ++machine_index) { // Iterar sobre cada tarea en la solución actual
-      for (unsigned task_index = 0; task_index < current_solution.GetMachineSize(machine_index); ++task_index) {        
-        //Task* current_task = current_solution[machine_index][task_index]; // Guardar la tarea actual para moverla posteriormente
-        
-        for (unsigned new_machine_index = 0; new_machine_index < machine_amount; ++new_machine_index) { // Iterar sobre el resto de máquinas
-          if (new_machine_index == machine_index) continue; // Iterar sobre todas las posiciones para insertar la tarea actual en la nueva máquina          
-          for (unsigned position = 0; position < current_solution.GetMachineSize(new_machine_index); ++position) {
-            // Intercambiar la tarea actual, con la tarea en la nueva posición          
-            //swap(current_solution[machine_index][task_index], current_solution[new_machine_index][position]);
-            current_solution.SwapTasksInPosition(machine_index, new_machine_index, task_index, position);
-            int current_tct = current_solution.GetTotalCompletionTime();
-            
-            // Si el nuevo TCT es mejor que el actual, actualizar la solución y marcar la mejora
-            // cout << "Movement TCT: " << current_tct << " vs Best TCT:" << best_tct << endl;
-            if (current_tct < best_tct) { cout << "¡Improvement! "; // DEBUG 
-              best_tct = current_tct;
-              improved = true;
-              solution = current_solution;
-            } else { // Si el nuevo TCT no es mejor, revertir el movimiento
-              //swap(current_solution[machine_index][task_index], current_solution[new_machine_index][position]);
-              current_solution.SwapTasksInPosition(machine_index, new_machine_index, task_index, position);
-            }
-          }
-        }
-        if (improved) break; // Si se ha mejorado la solución, salir del bucle interno
-      }             
-      if (improved) break; // Si se ha mejorado la solución, salir del bucle externo
-    }
-    if (improved) no_improvement_counter = 0;
-    else no_improvement_counter ++;
-  }  
-}
-
-/**
- * @brief Perform local search to improve the given solution. (Swap INTRA)
- * @param solution The solution to be improved.
- */
-void LocalSearch_SwapIntra(Solution& solution, Problem* problem, unsigned iterations_with_no_improvement) {  //cout << "SwapIntra\n"; // DEBUG
+void LocalSearch_SwapIntra(Solution& solution, unsigned iterations_with_no_improvement) {  //cout << "SwapIntra\n"; // DEBUG
+  Problem* problem = solution.GetProblem();
   Solution current_solution(problem, solution); // Make a copy of the solution
   int best_tct = current_solution.GetTotalCompletionTime();
   unsigned machine_amount = current_solution.GetMachineAmount();
@@ -256,28 +312,24 @@ void LocalSearch_SwapIntra(Solution& solution, Problem* problem, unsigned iterat
     
     for (unsigned machine_index = 0; machine_index < machine_amount; ++machine_index) { // Iterar sobre cada tarea en la solución actual
       unsigned machine_size = current_solution.GetMachineSize(machine_index);
-      for (unsigned task_index = 0; task_index < machine_size; ++task_index) {        
-        //for (unsigned new_machine_index = 0; new_machine_index < current_solution.size(); ++new_machine_index) { // Iterar sobre todas las máquinas          
-          // Iterar sobre todas las posiciones para insertar la tarea actual en la nueva máquina
-          for (unsigned position = 0; position < machine_size; ++position) {
-            if (task_index == position) continue; // Iterar sobre el resto de las posiciones de la misma máquina
-            // Intercambiar la tarea actual, con la tarea en la nueva posición 
-            //swap(current_solution[machine_index][task_index], current_solution[machine_index][position]);
+      for (unsigned task_index = 0; task_index < machine_size; ++task_index) { // Iterar sobre todas las posiciones para insertar la tarea actual en la nueva máquina        
+        for (unsigned position = 0; position < machine_size; ++position) {
+          if (task_index == position) continue; // Iterar sobre el resto de las posiciones de la misma máquina
+          // Intercambiar la tarea actual, con la tarea en la nueva posición
+          current_solution.SwapTasksInPosition(machine_index, machine_index, task_index, position);
+          int current_tct = current_solution.GetTotalCompletionTime();          
+          
+          // cout << "Movement TCT: " << current_tct << " vs Best TCT:" << best_tct << endl;
+
+          // Si el nuevo TCT es mejor que el actual, actualizar la solución y marcar la mejora
+          if (current_tct < best_tct) {  cout << "¡Improvement! "; // DEBUG 
+            best_tct = current_tct;
+            improved = true;
+            solution = current_solution;
+          } else { // Si el nuevo TCT no es mejor, revertir el movimiento
             current_solution.SwapTasksInPosition(machine_index, machine_index, task_index, position);
-            int current_tct = current_solution.GetTotalCompletionTime();
-            
-            // Si el nuevo TCT es mejor que el actual, actualizar la solución y marcar la mejora
-            // cout << "Movement TCT: " << current_tct << " vs Best TCT:" << best_tct << endl;
-            if (current_tct < best_tct) {  cout << "¡Improvement! "; // DEBUG 
-              best_tct = current_tct;
-              improved = true;
-              solution = current_solution;
-            } else { // Si el nuevo TCT no es mejor, revertir el movimiento
-              //swap(current_solution[machine_index][task_index], current_solution[machine_index][position]);
-              current_solution.SwapTasksInPosition(machine_index, machine_index, task_index, position);
-            }
           }
-        //}
+        }
         if (improved) break; // Si se ha mejorado la solución, salir del bucle interno
       }             
       if (improved) break; // Si se ha mejorado la solución, salir del bucle externo
@@ -285,6 +337,112 @@ void LocalSearch_SwapIntra(Solution& solution, Problem* problem, unsigned iterat
     if (improved) no_improvement_counter = 0;
     else no_improvement_counter ++;
   }
+}
+
+/**
+ * @brief Perform local search to improve the given solution by moving one task from a machine to another.
+ * @param solution - The solution to be improved.
+ * @param iterations_with_no_improvement - Maximum iterations with no improvement until the loop is finished
+ */
+void LocalSearch_InsertionInter(Solution& solution, unsigned iterations_with_no_improvement) {
+  bool debug = false; // DEBUG
+  if (debug) cout << "InsertionInter\n"; // DEBUG
+
+  Problem* problem = solution.GetProblem();
+  Solution current_solution(problem, solution);
+
+  int best_tct = current_solution.GetTotalCompletionTime(); // CalculateTCT(current_solution);
+  unsigned machine_amount = current_solution.GetMachineAmount();
+  
+  if (debug) cout << "  [LS_I_Inter] Solution TCT" << best_tct << endl; // DEBUG
+
+  bool improved = true; // Flag to check if the solution has been improved
+  unsigned no_improvement_counter = 0;
+  while (improved || no_improvement_counter < iterations_with_no_improvement) {
+    improved = false; // No improvement assumption
+    
+    for (unsigned machine_index = 0; machine_index < machine_amount; ++machine_index) { // Iterar sobre cada tarea en la solución actual
+      for (unsigned task_index = 0; task_index < current_solution.GetMachineSize(machine_index); ++task_index) {        
+        Task* current_task = current_solution.GetTask(machine_index, task_index); // Guardar la tarea actual para moverla posteriormente
+                
+        current_solution.EraseTaskInPosition(machine_index, task_index); // Eliminar la tarea actual de su posición actual
+        
+        for (unsigned new_machine_index = 0; new_machine_index < machine_amount; ++new_machine_index) { // Iterar sobre todas las máquinas
+          if (new_machine_index == machine_index) continue; // Iterar sobre todas las posiciones en OTRA máquina         
+          for (unsigned position = 0; position < current_solution.GetMachineSize(new_machine_index); ++position) {
+            // Insertar la tarea actual en la nueva posición y calcular el nuevo TCT            
+            current_solution.InsertTaskInPosition(new_machine_index, position, current_task);
+
+            int current_tct = current_solution.GetTotalCompletionTime();
+            
+            if (debug) cout << "Movement TCT: " << current_tct << " vs Best TCT:" << best_tct << endl; // DEBUG
+
+            // Si el nuevo TCT es mejor que el actual, actualizar la solución y marcar la mejora
+            if (current_tct < best_tct) { cout << "¡Improvement! "; // DEBUG
+              best_tct = current_tct;
+              improved = true;
+              solution = current_solution;
+            } else { // Si el nuevo TCT no es mejor, revertir el movimiento              
+              current_solution.EraseTaskInPosition(new_machine_index, position);
+            }
+          }
+        }
+        if (improved) break; // Si se ha mejorado la solución, salir del bucle interno
+        // Si no se ha mejorado la solución, restaurar la tarea eliminada a su posición original        
+        current_solution.InsertTaskInPosition(machine_index, task_index, current_task);
+      }             
+      if (improved) break; // Si se ha mejorado la solución, salir del bucle externo
+    }
+    if (improved) no_improvement_counter = 0;
+    else no_improvement_counter ++;
+  }
+}
+
+/**
+ * @brief Perform local search to improve the given solution by swapping one task from a machine with another task
+ * assigned to another machine.
+ * @param solution - The solution to be improved.
+ * @param iterations_with_no_improvement - Maximum iterations with no improvement until the loop is finished
+ */
+void LocalSearch_SwapInter(Solution& solution, unsigned iterations_with_no_improvement) { //cout << "SwapInter\n"; // DEBUG
+  Problem* problem = solution.GetProblem();
+  Solution current_solution(problem, solution); // Make a copy of the solution
+  int best_tct = current_solution.GetTotalCompletionTime();
+  unsigned machine_amount = current_solution.GetMachineAmount();
+
+  bool improved = true; // Flag to check if the solution has been improved
+  unsigned no_improvement_counter = 0;
+  while (improved || no_improvement_counter < iterations_with_no_improvement) {
+    improved = false; // No improvement assumption
+    
+    for (unsigned machine_index = 0; machine_index < machine_amount; ++machine_index) { // Iterar sobre cada tarea en la solución actual
+      for (unsigned task_index = 0; task_index < current_solution.GetMachineSize(machine_index); ++task_index) {
+        
+        for (unsigned new_machine_index = 0; new_machine_index < machine_amount; ++new_machine_index) { // Iterar sobre el resto de máquinas
+          if (new_machine_index == machine_index) continue; // Iterar sobre todas las posiciones para insertar la tarea actual en la nueva máquina          
+          for (unsigned position = 0; position < current_solution.GetMachineSize(new_machine_index); ++position) {
+            // Intercambiar la tarea actual, con la tarea en la nueva posición
+            current_solution.SwapTasksInPosition(machine_index, new_machine_index, task_index, position);
+            int current_tct = current_solution.GetTotalCompletionTime();
+            
+            // Si el nuevo TCT es mejor que el actual, actualizar la solución y marcar la mejora
+            // cout << "Movement TCT: " << current_tct << " vs Best TCT:" << best_tct << endl;
+            if (current_tct < best_tct) { cout << "¡Improvement! "; // DEBUG 
+              best_tct = current_tct;
+              improved = true;
+              solution = current_solution;
+            } else { // Si el nuevo TCT no es mejor, revertir el movimiento
+              current_solution.SwapTasksInPosition(machine_index, new_machine_index, task_index, position);
+            }
+          }
+        }
+        if (improved) break; // Si se ha mejorado la solución, salir del bucle interno
+      }             
+      if (improved) break; // Si se ha mejorado la solución, salir del bucle externo
+    }
+    if (improved) no_improvement_counter = 0;
+    else no_improvement_counter ++;
+  }  
 }
 
 /**

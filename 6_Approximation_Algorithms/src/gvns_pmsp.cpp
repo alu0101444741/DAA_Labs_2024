@@ -13,7 +13,7 @@
 #include "gvns_pmsp.h"
 
 /**
- * @brief Solve the Parallel Machine Scheduling Problem using a GRASP algorithm.
+ * @brief Solve the Parallel Machine Scheduling Problem using a GVNS algorithm.
  * @return Solution representing the assignment of tasks to machines
  */
 Solution GvnsPMSP::Solve() {  
@@ -76,10 +76,6 @@ public:
     solution.SwapTasksInPosition(machines_indexes_.first, machines_indexes_.second, tasks_indexes_.first, tasks_indexes_.second);
   }
 
-  //pair<unsigned,unsigned> GetMachinesIndexes() const { return machines_indexes_; }
-
-  //pair<unsigned,unsigned> GetTasksIndexes() const { return tasks_indexes_; }
-
   bool operator == (const SwapMovement& otro) const {
     bool same_machines = ((machines_indexes_.first == otro.machines_indexes_.first) && (machines_indexes_.second == otro.machines_indexes_.second));
     same_machines = ((machines_indexes_.first == otro.machines_indexes_.second) && (machines_indexes_.second == otro.machines_indexes_.first));
@@ -89,11 +85,17 @@ public:
   }
 
   string GetInfo() const {
-    return "M[" + to_string(machines_indexes_.first) + "][" + to_string(tasks_indexes_.first) +
+    return "M[" + to_string(machines_indexes_.first)  + "][" + to_string(tasks_indexes_.first)  +
       "] to M[" + to_string(machines_indexes_.second) + "][" + to_string(tasks_indexes_.second) + "]";
   }
 };
 
+/**
+ * @brief Shake the given solution to explore a set of diverse solutions.
+ * @param solution The current solution to be shaken.
+ * @param k The number of shaking movements to apply.
+ * @return The shaken solution.
+ */
 Solution GvnsPMSP::Shaking(const Solution& solution, unsigned k) {
   Solution shaken_solution(solution);
   vector<SwapMovement> movements;
@@ -114,9 +116,12 @@ Solution GvnsPMSP::Shaking(const Solution& solution, unsigned k) {
   return shaken_solution;
 }
 
-// neighborhoods --> Tipos de estructuras de entorno (swapInter, swapIntra...)
-// l --> No tiene sentido como parámetro
-Solution GvnsPMSP::VND(const Solution& solution/*, const vector<Neighborhood>& neighborhoods, unsigned l*/) { 
+/**
+ * @brief Perform Variable Neighborhood Descent (VND) local search to improve the given solution.
+ * @param solution The initial solution to be improved.
+ * @return The best neighbor solution found by VND.
+ */
+Solution GvnsPMSP::VND(const Solution& solution) { 
   Solution best_neighbor = solution;
 
   // Búsqueda local por VND
@@ -128,15 +133,4 @@ Solution GvnsPMSP::VND(const Solution& solution/*, const vector<Neighborhood>& n
     }
   }
   return best_neighbor;
-}
-
-Solution GvnsPMSP::LocalSearch(const Solution& solution, unsigned l) {
-  Solution local_optimum = solution;
-  switch (l) {
-    case 1: LocalSearch_InsercionInter(local_optimum, problem_, iterations_with_no_improvement_); break;
-    case 2: LocalSearch_SwapIntra(local_optimum, problem_, iterations_with_no_improvement_); break;
-    case 3: LocalSearch_SwapInter(local_optimum, problem_, iterations_with_no_improvement_); break;
-    default: LocalSearch_InsercionIntra(local_optimum, problem_, iterations_with_no_improvement_); break;
-  }
-  return local_optimum;                  
 }
