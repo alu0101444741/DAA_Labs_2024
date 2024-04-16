@@ -92,12 +92,12 @@ Solution LocalSearch(const Solution& solution, unsigned neighborhood, unsigned i
   bool improved = true; // Flag to check if the solution has been improved
   unsigned no_improvement_counter = 0;
   while (improved || no_improvement_counter < iterations_with_no_improvement) {
-    improved = false; // No improvement assumption
+    improved = false; // No improvement assumption    
 
     switch (neighborhood) {
-      case 1: LocalSearch_InsertionIntra(local_optimum, current_solution, improved, best_tct, machine_amount); break;
-      case 2: LocalSearch_SwapIntra(local_optimum, current_solution, improved, best_tct, machine_amount); break;
-      case 3: LocalSearch_InsertionInter(local_optimum, current_solution, improved, best_tct, machine_amount); break;
+      case 0: LocalSearch_InsertionIntra(local_optimum, current_solution, improved, best_tct, machine_amount); break;
+      case 1: LocalSearch_SwapIntra(local_optimum, current_solution, improved, best_tct, machine_amount); break;
+      case 2: LocalSearch_InsertionInter(local_optimum, current_solution, improved, best_tct, machine_amount); break;
       default: LocalSearch_SwapInter(local_optimum, current_solution, improved, best_tct, machine_amount); break;
     }
     if (improved) no_improvement_counter = 0;

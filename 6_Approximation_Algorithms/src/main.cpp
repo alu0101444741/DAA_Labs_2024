@@ -19,6 +19,7 @@
 int main(int argc, char* argv[]) {
   test_pmsp_algorithms();
   //test_grasp_localsearch();
+  test_modificacion();
   return 0;
 };
 

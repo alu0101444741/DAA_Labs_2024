@@ -39,6 +39,9 @@ public:
    */
   Solution Solve();
 
+  Solution Solve_Modificacion();
+  Solution VND_Modificacion(const Solution& solution);
+
 private:
   /**
    * @brief Shake the given solution to explore a set of diverse solutions.
@@ -53,7 +56,7 @@ private:
    * @param solution The initial solution to be improved.
    * @return The best neighbor solution found by VND.
    */
-  Solution VND(const Solution& solution);
+  Solution VND(const Solution& solution);  
 };
 
 /** @brief Represents a movement to swap tasks between machines in a solution. */

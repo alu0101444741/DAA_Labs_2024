@@ -26,12 +26,16 @@ const string kMicro = "\u00B5";
 //const unsigned kMaximumExecutionTime = 300000000;
 //const int kExecutionTimeCode = -3;
 
+void test_algorithm_modificacion(PMSP* pmsp_algorithm, const string& filename, const string& tasks, const string& machines);
+
+void test_modificacion();
+
 /**
  * @brief Test the performance of a PMSP algorithm using the given instance file and starting node.
  * @param tsp_algorithm Pointer to the TSP algorithm instance.
  * @param filename Name of the instance file.
  */
-void test_algorithm(PMSP* tsp_algorithm, const string& filename, const string& tasks);
+void test_algorithm(PMSP* tsp_algorithm, const string& filename, const string& tasks, const string& machines);
 
 /** @brief Execute PMSP algorithms and measure the time taken by each of them. */
 void test_pmsp_algorithms();
