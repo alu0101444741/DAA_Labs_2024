@@ -49,47 +49,6 @@ Solution GvnsPMSP::Solve() {
   return solution;
 }
 
-class SwapMovement {
-private:
-  pair<unsigned, unsigned> machines_indexes_;
-  pair<unsigned, unsigned> tasks_indexes_;
-public:
-  SwapMovement(unsigned first_machine, unsigned second_machine, unsigned first_task, unsigned second_task) {
-    machines_indexes_ = pair<unsigned, unsigned>(first_machine, second_machine);
-    tasks_indexes_ = pair<unsigned,unsigned>(first_task, second_task);
-  }
-
-  SwapMovement(const Solution& solution) {
-    unsigned machine_amount = solution.GetMachineAmount();
-    machines_indexes_ = pair<unsigned, unsigned>(rand() % machine_amount, rand() % machine_amount);
-    while(machines_indexes_.first == machines_indexes_.second) {
-      machines_indexes_.second = rand() % machine_amount;
-    }
-
-    unsigned first_machine_tasks  = solution.GetMachineSize(machines_indexes_.first),
-             second_machine_tasks = solution.GetMachineSize(machines_indexes_.second);
-
-    tasks_indexes_ = pair<unsigned, unsigned>(rand() % first_machine_tasks, rand() % second_machine_tasks);
-  }
-
-  void Execute(Solution& solution) const {
-    solution.SwapTasksInPosition(machines_indexes_.first, machines_indexes_.second, tasks_indexes_.first, tasks_indexes_.second);
-  }
-
-  bool operator == (const SwapMovement& otro) const {
-    bool same_machines = ((machines_indexes_.first == otro.machines_indexes_.first) && (machines_indexes_.second == otro.machines_indexes_.second));
-    same_machines = ((machines_indexes_.first == otro.machines_indexes_.second) && (machines_indexes_.second == otro.machines_indexes_.first));
-    bool same_tasks = ((tasks_indexes_.first == otro.tasks_indexes_.first) && (tasks_indexes_.second == otro.tasks_indexes_.second));
-    same_tasks = ((tasks_indexes_.first == otro.tasks_indexes_.second) && (tasks_indexes_.second == otro.tasks_indexes_.first));
-    return same_machines && same_tasks;
-  }
-
-  string GetInfo() const {
-    return "M[" + to_string(machines_indexes_.first)  + "][" + to_string(tasks_indexes_.first)  +
-      "] to M[" + to_string(machines_indexes_.second) + "][" + to_string(tasks_indexes_.second) + "]";
-  }
-};
-
 /**
  * @brief Shake the given solution to explore a set of diverse solutions.
  * @param solution The current solution to be shaken.

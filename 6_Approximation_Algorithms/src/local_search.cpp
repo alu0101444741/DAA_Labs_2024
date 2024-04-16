@@ -169,7 +169,7 @@ void LocalSearch_SwapIntra(Solution& solution, Solution& current_solution, bool&
         // cout << "Movement TCT: " << current_tct << " vs Best TCT:" << best_tct << endl;
 
         // Si el nuevo TCT es mejor que el actual, actualizar la solución y marcar la mejora
-        if (current_tct < best_tct) {  cout << "¡Improvement! "; // DEBUG 
+        if (current_tct < best_tct) {  //cout << "¡Improvement! "; // DEBUG 
           best_tct = current_tct;
           improved = true;
           solution = current_solution;
@@ -209,7 +209,7 @@ void LocalSearch_InsertionInter(Solution& solution, Solution& current_solution, 
           //if (debug) cout << "Movement TCT: " << current_tct << " vs Best TCT:" << best_tct << endl; // DEBUG
 
           // Si el nuevo TCT es mejor que el actual, actualizar la solución y marcar la mejora
-          if (current_tct < best_tct) { cout << "¡Improvement! "; // DEBUG
+          if (current_tct < best_tct) { //cout << "¡Improvement! "; // DEBUG
             best_tct = current_tct;
             improved = true;
             solution = current_solution;
@@ -247,9 +247,8 @@ void LocalSearch_SwapInter(Solution& solution, Solution& current_solution, bool&
           int current_tct = current_solution.GetTotalCompletionTime();
           
           // Si el nuevo TCT es mejor que el actual, actualizar la solución y marcar la mejora
-          cout << "Movement TCT: " << current_tct << " vs Best TCT:" << best_tct << endl;
-          if (current_tct < best_tct) {
-            cout << "¡Improvement! "; // DEBUG 
+          //cout << "Movement TCT: " << current_tct << " vs Best TCT:" << best_tct << endl;
+          if (current_tct < best_tct) { // cout << "¡Improvement! "; // DEBUG 
             best_tct = current_tct;
             improved = true;
             solution = current_solution;

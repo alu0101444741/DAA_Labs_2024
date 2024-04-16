@@ -30,6 +30,7 @@ protected:
   Solution* solution_;
   string algorithm_name_;
   double tct_improvement_average_;
+  //vector<double> tct_improvement_average_;
 public:
   /** @brief Constructor for the Parallel Machine Scheduling Problem (PMSP) solver. */
   PMSP() : algorithm_name_("PMSP") { }
@@ -64,5 +65,6 @@ public:
   Problem* GetProblem() const { return problem_; }
 
   double GetAverageLocalSearchImprovement() const { return tct_improvement_average_; }
+  //vector<double> GetAverageLocalSearchImprovement() const { return tct_improvement_average_; }
 };
 #endif // PMSP_H_
