@@ -18,7 +18,7 @@
 /** @brief GVNS Parallel Machine Scheduling Problem solver. */
 class GvnsPMSP: public PMSP {
 private:
-  unsigned maximum_iterations_, candidate_list_size_, k_maximum_ = 5;
+  unsigned maximum_iterations_, candidate_list_size_, k_maximum_ = 2;
   unsigned iterations_with_no_improvement_ = 2;
 public:  
   /**

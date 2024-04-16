@@ -35,7 +35,7 @@ public:
   : maximum_iterations_(maximum_iterations),
     candidate_list_size_(candidate_list_size),
     perform_local_search_(perform_local_search),
-    local_search_type_(min(local_search_type, (unsigned) 4)) { algorithm_name_ = "GRASP"; problem_ = new Problem(); }
+    local_search_type_(min(local_search_type, local_search_types_)) { algorithm_name_ = "GRASP"; problem_ = new Problem(); }
 
   /**
    * @brief Solve the Parallel Machine Scheduling Problem using a GRASP algorithm.

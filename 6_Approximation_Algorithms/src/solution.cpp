@@ -120,6 +120,6 @@ void Solution::Show(const string& tag, bool show_machine_tasks, bool show_machin
       total_tasks ++;
     }
   }
-  cout << tag << kFourSpaces + "TCT: " << GetTotalCompletionTime() << endl;
+  cout << tag << kFourSpaces + "TCT: " << GetTotalCompletionTime();
   //cout << "\tTasks: " << total_tasks; // DEBUG
 }

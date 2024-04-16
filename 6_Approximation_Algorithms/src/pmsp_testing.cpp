@@ -43,9 +43,9 @@ void test_algorithm(PMSP* pmsp_algorithm, const string& filename, const string& 
 
 /** @brief Execute PMSP algorithms and measure the time taken by each of them. */
 void test_pmsp_algorithms() {
-  vector<string> machines = { /*"2",*/  "4",/*  "6",  "8"*/};
-  vector<string> tasks    = { /*"40", "50", "60",*/ "70"};
-  unsigned maximum_iterations = 50, candidate_list_size = 2;
+  vector<string> machines = {/* "2",*/  "4"/*,  "6",  "8"*/};
+  vector<string> tasks    = {/* "40", "50", "60",*/ "70"};
+  unsigned maximum_iterations = 50, candidate_list_size = 6;
   vector<PMSP*> algorithms = {
     //new GreedyPMSP(),
     new GraspPMSP(maximum_iterations, candidate_list_size, true, 1),
@@ -69,7 +69,7 @@ void test_grasp_localsearch() {
   vector<string> local_search_names = {"InsertionIntra", "SwapIntra", "InsertionInter", "SwapInter"};
   vector<string> machines = { "2",  "4",  "6",/*  "8" */};
   vector<string> tasks    = { "40", "50", "60",/* "70"*/};
-  unsigned maximum_iterations = 50, candidate_list_size = 8;
+  unsigned maximum_iterations = 50, candidate_list_size = 5;
   vector<PMSP*> algorithms = {
     new GraspPMSP(maximum_iterations, candidate_list_size, true, 1),
     new GraspPMSP(maximum_iterations, candidate_list_size, true, 2),

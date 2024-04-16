@@ -84,7 +84,7 @@ Solution GvnsPMSP::VND(const Solution& solution) {
   Solution best_neighbor = solution;
 
   // Búsqueda local por VND
-  for (unsigned l = 0; l < 4; ++l) {
+  for (unsigned l = 0; l < local_search_types_; ++l) {
     Solution current_neighbor = LocalSearch(solution, l);
     if (current_neighbor.GetTotalCompletionTime() < best_neighbor.GetTotalCompletionTime()) {
       best_neighbor = current_neighbor;

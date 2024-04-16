@@ -29,6 +29,7 @@ protected:
   Problem* problem_;
   Solution* solution_;
   string algorithm_name_;
+  unsigned local_search_types_ = 4;
   double tct_improvement_average_;
   //vector<double> tct_improvement_average_;
 public:
