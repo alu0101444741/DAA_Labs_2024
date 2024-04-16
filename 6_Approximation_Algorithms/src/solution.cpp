@@ -32,9 +32,15 @@ void Solution::UpdateMachineTCT(unsigned machine_index) {
     machine_completion_time += (solution_[machine_index][i]->time_ + setup_time);
   }
   machines_tct_[machine_index] = machine_completion_time;
-  if (machines_tct_[machine_index] > total_tct_) {
-    total_tct_ = machines_tct_[machine_index]; // Actualizar el TCT si es mayor
+
+  int maximum_tct = machines_tct_[machine_index];
+  for (const int& tct : machines_tct_) {
+    if (tct > maximum_tct) {
+      maximum_tct = tct; // Actualizar el TCT si es mayor
+    }
   }
+  //cout << "Updating TCT from " << total_tct_ << " to " << maximum_tct << endl; // DEBUG
+  total_tct_ = maximum_tct;
 }
 
 /**
@@ -97,21 +103,23 @@ void Solution::SwapTasksInPosition(unsigned machine_index, unsigned new_machine_
 /**
  * @brief Display the solution of the parallel machine scheduling problem.
  * @param show_task_info Flag indicating whether to display task information.
+ * @param show_machine_tasks Flag indicating whether to display task amount on each machine.
+ * @param show_machine_tcts Flag indicating whether to display each machine TCT.
  * @param tag String that will preceed the total time console output
  */
-void Solution::Show(const string& tag, bool show_task_info) {
+void Solution::Show(const string& tag, bool show_machine_tasks, bool show_machine_tcts, bool show_task_info) {
   //cout << kFourSpaces + "Instance: " + filename;
-  int total_tasks = 0, total_completion_time = 0;
+  int total_tasks = 0;
   for (size_t i = 0; i < solution_.size(); ++i) {
-    //cout << "Machine " << i+1 << " [Size: " << solution[i].size() << "]: ";
-    int total_time = 0;
-    for (const auto& task : solution_[i]) {
+    if (show_machine_tasks || show_machine_tcts || show_task_info)  cout << "Machine " << i;
+    if (show_machine_tasks) cout << " [Size: " << solution_[i].size() << "]";
+    if (show_machine_tcts) cout << " TCT: " << machines_tct_[i];
+
+    for (const auto& task : solution_[i]) {      
       if (show_task_info) cout << "\n\t" << task->GetInfo();
-      total_time += task->time_;
       total_tasks ++;
     }
-    total_completion_time = max(total_completion_time, total_time);
   }
-  cout << tag << kFourSpaces + "Total time: " << total_completion_time;
+  cout << tag << kFourSpaces + "TCT: " << GetTotalCompletionTime() << endl;
   //cout << "\tTasks: " << total_tasks; // DEBUG
 }

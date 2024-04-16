@@ -22,7 +22,7 @@ private:
   unsigned maximum_iterations_, candidate_list_size_;
   bool perform_local_search_;
   unsigned local_search_type_;
-  unsigned iterations_with_no_improvement_ = 5;
+  unsigned iterations_with_no_improvement_ = 2;
 public:  
   /**
    * @brief Constructor for GraspPMSP.
@@ -44,6 +44,8 @@ public:
   Solution Solve();
 
   unsigned GetIterationsWithNoImprovement() const { return iterations_with_no_improvement_; }
+
+
 };
 
 #endif /* GRASP_PMSP_H_ */

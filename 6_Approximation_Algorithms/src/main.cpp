@@ -18,6 +18,7 @@
 /** @brief Main function */
 int main(int argc, char* argv[]) {
   test_pmsp_algorithms();
+  //test_grasp_localsearch();
   return 0;
 };
 

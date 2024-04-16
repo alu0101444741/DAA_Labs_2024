@@ -41,46 +41,48 @@ Solution ConstructInitialSolution(Problem* problem, const vector<Task*>& tasks, 
  */
 Solution LocalSearch(const Solution& solution, unsigned neighborhood, unsigned iterations_with_no_improvement = 5);
 
-Solution LocalSearchMainStructure(const Solution& solution, unsigned neighborhood, unsigned iterations_with_no_improvement);
-void loca1 (Solution& solution, Solution& current_solution, bool& improved, unsigned machine_amount, int& best_tct);
-void loca2 (Solution& solution, Solution& current_solution, bool& improved, unsigned machine_amount, int& best_tct);
-void loca3 (Solution& solution, Solution& current_solution, bool& improved, unsigned machine_amount, int& best_tct);
-void loca4 (Solution& solution, Solution& current_solution, bool& improved, unsigned machine_amount, int& best_tct);
-
-/**
- * @brief Perform local search to improve the given solution by moving one task from a machine to another.
- * @param solution - The solution to be improved.
- * @param problem - Problem information
- * @param iterations_with_no_improvement - Maximum iterations with no improvement until the loop is finished
- */
-void LocalSearch_InsertionInter(Solution& solution, unsigned iterations_with_no_improvement);
-
 /**
  * @brief Perform local search to improve the given solution by moving one task from a machine to another position
  * in the same machine.
  * @param solution - The solution to be improved.
- * @param problem - Problem information
- * @param iterations_with_no_improvement - Maximum iterations with no improvement until the loop is finished
+ * @param current_solution - Solution copy to test new movements
+ * @param improved - Improvement flag. Set to 'true' if an improvement was found.
+ * @param best_tct - Reference to the best TCT value in order to update it at the same time as the solution
+ * @param machine_amount - Number of machines
  */
-void LocalSearch_InsertionIntra(Solution& solution, unsigned iterations_with_no_improvement);
-
-/**
- * @brief Perform local search to improve the given solution by swapping one task from a machine with another task
- * assigned to another machine.
- * @param solution - The solution to be improved.
- * @param problem - Problem information
- * @param iterations_with_no_improvement - Maximum iterations with no improvement until the loop is finished
- */
-void LocalSearch_SwapInter(Solution& solution, unsigned iterations_with_no_improvement);
+void LocalSearch_InsertionIntra(Solution& solution, Solution& current_solution, bool& improved, int& best_tct, unsigned machine_amount);
 
 /**
  * @brief Perform local search to improve the given solution by swapping one task from a machine with another task
  * assigned to the same machine.
  * @param solution - The solution to be improved.
- * @param problem - Problem information
- * @param iterations_with_no_improvement - Maximum iterations with no improvement until the loop is finished
+ * @param current_solution - Solution copy to test new movements
+ * @param improved - Improvement flag. Set to 'true' if an improvement was found.
+ * @param best_tct - Reference to the best TCT value in order to update it at the same time as the solution
+ * @param machine_amount - Number of machines
  */
-void LocalSearch_SwapIntra(Solution& solution, unsigned iterations_with_no_improvement);
+void LocalSearch_SwapIntra(Solution& solution, Solution& current_solution, bool& improved, int& best_tct, unsigned machine_amount);
+
+/**
+ * @brief Perform local search to improve the given solution by moving one task from a machine to another.
+ * @param solution - The solution to be improved.
+ * @param current_solution - Solution copy to test new movements
+ * @param improved - Improvement flag. Set to 'true' if an improvement was found.
+ * @param best_tct - Reference to the best TCT value in order to update it at the same time as the solution
+ * @param machine_amount - Number of machines
+ */
+void LocalSearch_InsertionInter(Solution& solution, Solution& current_solution, bool& improved, int& best_tct, unsigned machine_amount);
+
+/**
+ * @brief Perform local search to improve the given solution by swapping one task from a machine with another task
+ * assigned to another machine.
+ * @param solution - The solution to be improved.
+ * @param current_solution - Solution copy to test new movements
+ * @param improved - Improvement flag. Set to 'true' if an improvement was found.
+ * @param best_tct - Reference to the best TCT value in order to update it at the same time as the solution
+ * @param machine_amount - Number of machines
+ */
+void LocalSearch_SwapInter(Solution& solution, Solution& current_solution, bool& improved, int& best_tct, unsigned machine_amount);
 
 /**
  * @brief Select a random task from a list of candidates.

@@ -36,4 +36,6 @@ void test_algorithm(PMSP* tsp_algorithm, const string& filename, const string& t
 /** @brief Execute PMSP algorithms and measure the time taken by each of them. */
 void test_pmsp_algorithms();
 
+void test_grasp_localsearch();
+
 #endif // TEST_UTILITIES_H_

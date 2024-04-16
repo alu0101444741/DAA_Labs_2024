@@ -112,10 +112,12 @@ public:
 
   /**
    * @brief Display the solution of the parallel machine scheduling problem.
-   * @param tag String that will preceed the total time console output
    * @param show_task_info Flag indicating whether to display task information.
-  */
-  void Show(const string& tag, bool show_task_info);
+   * @param show_machine_tasks Flag indicating whether to display task amount on each machine.
+   * @param show_machine_tcts Flag indicating whether to display each machine TCT.
+   * @param tag String that will preceed the total time console output
+   */
+  void Show(const string& tag, bool show_machine_tasks = false, bool show_machine_tcts = false, bool show_task_info = false);
 
 private:
   /** @brief Updates the total completion time (TCT) of the solution. */

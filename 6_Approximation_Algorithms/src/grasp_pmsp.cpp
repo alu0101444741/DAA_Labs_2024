@@ -34,7 +34,7 @@ Solution GraspPMSP::Solve() {
     tct_improvements[iteration] = current_solution.GetTotalCompletionTime();
     
     //current_solution = LocalSearch(current_solution, local_search_type_, iterations_with_no_improvement_);
-    current_solution = LocalSearchMainStructure(current_solution, local_search_type_, iterations_with_no_improvement_);
+    current_solution = LocalSearch(current_solution, local_search_type_, iterations_with_no_improvement_);
 
     // Calculate completion time of the current solution
     int current_completion_time = current_solution.GetTotalCompletionTime();
@@ -46,17 +46,17 @@ Solution GraspPMSP::Solve() {
       best_completion_time = current_completion_time;
     }
   }  
-/* 
-  // Local search average improvement DEBUG
-  double tct_improvement_sum = 0;
+ 
+  // Local search average improvement
+  tct_improvement_average_ = 0;
   //show_vector(tct_improvements);
   for (unsigned i = 0; i < maximum_iterations_; ++i) {
-    tct_improvement_sum += tct_improvements[i];
+    tct_improvement_average_ += tct_improvements[i];
   }
-  cout << " Sum = " << tct_improvement_sum << ". ";
-  tct_improvement_sum = (tct_improvement_sum / (double) maximum_iterations_);
+  // cout << " Sum = " << tct_improvement_sum << ". "; // DEBUG
+  tct_improvement_average_ = (tct_improvement_average_ / (double) maximum_iterations_);
 
-  cout << "Average local search improvement " << tct_improvement_sum << "%\n";
-*/  
+  // cout << "Average local search improvement: " << tct_improvement_sum << "%\n"; // DEBUG
+ 
   return assignment;
 }
