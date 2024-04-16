@@ -20,33 +20,36 @@ Solution GvnsPMSP::Solve() {
   bool debug = false; // DEBUG
   unsigned grasp_iterations = 5, candidate_list_size = 3;
   GraspPMSP grasp(grasp_iterations, candidate_list_size, false); grasp.SetProblem(problem_);
-  Solution solution(problem_);  
+  Solution best_solution(problem_);  
 
   for (unsigned iteration = 0; iteration < maximum_iterations_; ++iteration) { // GRASP loop
-    Solution initial_solution = grasp.Solve();    // Solucion GRASP sin busquedas locales.
-    solution = initial_solution;
+    //Solution initial_solution = grasp.Solve();    // Solucion GRASP sin busquedas locales.
+    //solution = initial_solution;
+    Solution current_solution = grasp.Solve();
 
-     if (debug) { initial_solution.Show("Grasp initial solution: ", false); cout << endl; } // DEBUG
+    if (debug) { current_solution.Show("Grasp initial solution: ", false); cout << endl; } // DEBUG
 
     for (unsigned k = 0; k < k_maximum_; ++k) { // k define el radio del anillo de busqueda      
-      Solution shaken_solution = Shaking(initial_solution, k); // (a) Shaking
+      //Solution shaken_solution = Shaking(initial_solution, k); // (a) Shaking
+      Solution shaken_solution = Shaking(current_solution, k); // (a) Shaking
       
       if (debug) { shaken_solution.Show(kFourSpaces + "Shaken solution (k = " + to_string(k) + "): ", false); cout << endl;}  // DEBUG   
 
-      Solution current_solution = VND(shaken_solution); // (b) Local search by VND
+      Solution vnd_solution = VND(shaken_solution); // (b) Local search by VND
 
-      if (debug) { current_solution.Show(kFourSpaces + "VND solution: ", false); cout << endl; } // DEBUG 
+      if (debug) { vnd_solution.Show(kFourSpaces + "VND solution: ", false); cout << endl; } // DEBUG 
       
       // (c) Movimiento o no a la solución local óptima
-      if (current_solution.GetTotalCompletionTime() < initial_solution.GetTotalCompletionTime()) { 
-        solution = current_solution;
-        k = 1; // Continuar la búsqueda con la primera estructura de vecindario
+      if (vnd_solution.GetTotalCompletionTime() < current_solution.GetTotalCompletionTime()) { 
+        best_solution = vnd_solution;
+        current_solution = vnd_solution;
+        k = 0; // Continuar la búsqueda con la primera estructura de vecindario
 
-        if (debug) { solution.Show(kFourSpaces + "Improved solution: ", false); }
+        if (debug) { best_solution.Show(kFourSpaces + "Improved solution: ", false); }
       }
     }
   }
-  return solution;
+  return best_solution;
 }
 
 /**
@@ -82,13 +85,13 @@ Solution GvnsPMSP::Shaking(const Solution& solution, unsigned k) {
  */
 Solution GvnsPMSP::VND(const Solution& solution) { 
   Solution best_neighbor = solution;
-
+  Solution current_neighbor = solution;
   // Búsqueda local por VND
   for (unsigned l = 0; l < local_search_types_; ++l) {
-    Solution current_neighbor = LocalSearch(solution, l);
+    current_neighbor = LocalSearch(best_neighbor, l);
     if (current_neighbor.GetTotalCompletionTime() < best_neighbor.GetTotalCompletionTime()) {
       best_neighbor = current_neighbor;
-      l = 0;  
+      l = 0;
     }
   }
   return best_neighbor;

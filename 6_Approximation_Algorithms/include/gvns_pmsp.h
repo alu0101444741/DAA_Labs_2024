@@ -18,17 +18,20 @@
 /** @brief GVNS Parallel Machine Scheduling Problem solver. */
 class GvnsPMSP: public PMSP {
 private:
-  unsigned maximum_iterations_, candidate_list_size_, k_maximum_ = 2;
+  unsigned maximum_iterations_, candidate_list_size_, k_maximum_;
   unsigned iterations_with_no_improvement_ = 2;
 public:  
   /**
    * @brief Constructor for GvnsPMSP.
    * @param maximum_iterations - Number of iterations for the grasp algorithm
    * @param candidate_list_size - Size of the list of candidates (LRC)
+   * @param k_maximum - Maximum perturbation amount
    */
-  GvnsPMSP(unsigned maximum_iterations, unsigned candidate_list_size)
+  GvnsPMSP(unsigned maximum_iterations, unsigned candidate_list_size, unsigned k_maximum)
   : maximum_iterations_(maximum_iterations),
-    candidate_list_size_(candidate_list_size) { algorithm_name_ = "GVNS"; problem_ = new Problem(); }
+    candidate_list_size_(candidate_list_size),
+    k_maximum_(k_maximum)
+    { algorithm_name_ = "GVNS"; problem_ = new Problem(); }
 
   /**
    * @brief Solve the Parallel Machine Scheduling Problem using a GVNS algorithm.

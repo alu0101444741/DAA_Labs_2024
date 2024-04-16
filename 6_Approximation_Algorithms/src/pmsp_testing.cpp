@@ -43,15 +43,15 @@ void test_algorithm(PMSP* pmsp_algorithm, const string& filename, const string& 
 
 /** @brief Execute PMSP algorithms and measure the time taken by each of them. */
 void test_pmsp_algorithms() {
-  vector<string> machines = {/* "2",*/  "4"/*,  "6",  "8"*/};
-  vector<string> tasks    = {/* "40", "50", "60",*/ "70"};
-  unsigned maximum_iterations = 50, candidate_list_size = 6;
+  vector<string> machines = {/*"2",  "4",*/  "6"/*,  "8"*/};
+  vector<string> tasks    = {"40", /*"50", "60"/*, "70"*/};
+  unsigned maximum_iterations = 50, candidate_list_size = 3, k_maximum = 2;
   vector<PMSP*> algorithms = {
     //new GreedyPMSP(),
     new GraspPMSP(maximum_iterations, candidate_list_size, true, 1),
-    //new GvnsPMSP(10, candidate_list_size)
+    new GvnsPMSP(10, candidate_list_size, k_maximum)
   };
-  int a = 45;
+
   for (const auto& algorithm : algorithms) {
     cout << "<<< " << algorithm->GetAlgorithmName() << " >>>\n"; 
     for (const string& m : machines) {

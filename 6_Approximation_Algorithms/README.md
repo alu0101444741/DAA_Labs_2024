@@ -8,7 +8,7 @@ Nada que reseñar.
 * TCT: Muchas veces el ćalculo o actualización del TCT incluye cálculos innecesarios. Por ello, se incluirá un atributo total_TCT y el TCT de cada máquina. **[Hecho]** Se actualizará el valor de cada máquina cada vez que se realice un movimiento en ella.
 
 ##### Porcentajes de mejora:
-* GRASP: Para cada iteración, almacenar el porcentaje de mejora de la solución con respecto a su mejora (LocalSearch). **[No hecho]** Las búsquedas locales no presentan mejoras.
+* GRASP: Para cada iteración, almacenar el porcentaje de mejora de la solución con respecto a su mejora (LocalSearch). **[Hecho]** Adicionalmente, hay código comentado para ejecutar todas las búsquedas locales en el mismo GRASP y guardar la mejora de todas ellas.
 
 
 
