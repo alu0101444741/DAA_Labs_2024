@@ -26,10 +26,14 @@ void Solution::UpdateTotalTCT() {
  * @param machine_index The index of the machine.
  */
 void Solution::UpdateMachineTCT(unsigned machine_index) {
-  int machine_completion_time = 0, setup_time = 0;
-  for (unsigned i = 0; i < solution_[machine_index].size(); ++i) {
-    setup_time = problem_->GetSetupTime((i == 0) ? 0 : solution_[machine_index][i - 1]->id_, solution_[machine_index][i]->id_);
-    machine_completion_time += (solution_[machine_index][i]->time_ + setup_time);
+  int machine_completion_time = solution_[machine_index][0]->time_ + problem_->GetSetupTime(0, solution_[machine_index][0]->id_),
+      setup_time = 0;
+  unsigned machine_size = solution_[machine_index].size();
+
+  for (unsigned j = 1; j < machine_size; ++j) {
+    //setup_time = problem_->GetSetupTime((i == 0) ? 0 : solution_[machine_index][i - 1]->id_, solution_[machine_index][i]->id_);
+    setup_time = problem_->GetSetupTime(solution_[machine_index][j - 1]->id_, solution_[machine_index][j]->id_); // sij
+    machine_completion_time += ((machine_size - j) * (setup_time + solution_[machine_index][j]->time_)); // (k - i) * (sij + pj)
   }
   machines_tct_[machine_index] = machine_completion_time;
 
@@ -114,6 +118,7 @@ void Solution::Show(const string& tag, bool show_machine_tasks, bool show_machin
     if (show_machine_tasks || show_machine_tcts || show_task_info)  cout << "Machine " << i;
     if (show_machine_tasks) cout << " [Size: " << solution_[i].size() << "]";
     if (show_machine_tcts) cout << " TCT: " << machines_tct_[i];
+    if (show_machine_tasks || show_machine_tcts || show_task_info) cout << endl;
 
     for (const auto& task : solution_[i]) {      
       if (show_task_info) cout << "\n\t" << task->GetInfo();

@@ -12,12 +12,15 @@
 
 #include "pmsp_testing.h"
 
+// ********************************* Modificación 16 / 04 / 2024 ******************************************
+// ********************************************************************************************************
 void test_algorithm_modificacion(GvnsPMSP* pmsp_algorithm, const string& filename, const string& tasks, const string& machines) {
   pmsp_algorithm->InitializeProblem(kInputFolderPath + tasks + "/" + filename + kInputFileExtension);
+  //pmsp_algorithm->GetProblem()->ShowInfo();
   auto start = Clock::now();  
   Solution solution = pmsp_algorithm->Solve_Modificacion();
   auto stop = Clock::now();
-  auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+  auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);  
   solution.Show("[" + filename + "]");
   
   cout << kFourSpaces + "CPU: " << duration.count() << " ms" <<  kFourSpaces;
@@ -29,16 +32,15 @@ void test_modificacion() {
   vector<string> tasks    = {"40", /*"50", "60"/*, "70"*/};
   unsigned maximum_iterations = 50, candidate_list_size = 3, k_maximum = 2;
   GvnsPMSP* pmsp_algorithm = new GvnsPMSP(10, candidate_list_size, k_maximum);
-
+  cout << "<<< GRASP-VNS [Modificación] >>>\n";
   for (const string& m : machines) {
     for (const string& t : tasks) {        
       test_algorithm_modificacion(pmsp_algorithm, "I" + t + "j_" + m + "m_S1_1", t, m);
     }
-    cout << endl;
-  }
-  cout << endl;
-
+  } cout << endl;
 }
+// ********************************************************************************************************
+// ********************************************************************************************************
 
 /**
  * @brief Test the performance of a PMSP algorithm using the given instance file and starting node.
@@ -76,9 +78,7 @@ void test_pmsp_algorithms() {
       for (const string& t : tasks) {        
         test_algorithm(algorithm, "I" + t + "j_" + m + "m_S1_1", t, m);
       }
-      cout << endl;
-    }
-    cout << endl;
+    }cout << endl;
   }  
 }
 

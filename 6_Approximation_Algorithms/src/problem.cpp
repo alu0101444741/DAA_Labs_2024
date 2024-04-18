@@ -68,7 +68,7 @@ void Problem::ShowInfo() {
   cout << "\nSetup times [ " << setup_times_.size() << " x " << columns << " ]\n";
 
   for (unsigned i = 0; i < setup_times_.size(); ++i) {
-    show_vector(setup_times_[i]);
+    show_vector(setup_times_[i]); cout << " [EOF]\n";
   }  
 }
 
