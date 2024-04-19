@@ -1,5 +1,15 @@
 ### Práctica 7: PMSP. Algoritmos aproximados
 
+#### Entrega 16/04/2024
+Cálculo erróneo del TCT. No se multiplicaba por k (en este caso, tamaño de la máquina menos el índice de tarea actual)
+```cpp
+// Antes
+    machine_completion_time += ((machine_size - j) * (setup_time + solution_[machine_index][j]->time_));
+// Ahora
+    machine_completion_time += (setup_time + solution_[machine_index][j]->time_);
+```
+De igual manera los cálculos siguen siendo incorrectos. Debo buscar donde está la causa.
+
 #### Entrega 09/04/2024
 Nada que reseñar.
 

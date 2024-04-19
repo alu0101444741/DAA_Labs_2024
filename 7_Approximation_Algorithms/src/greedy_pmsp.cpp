@@ -51,4 +51,3 @@ Solution GreedyPMSP::Solve() {
   }
   return assignment;
 }
-
