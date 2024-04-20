@@ -13,6 +13,7 @@
 #define TEST_UTILITIES_H_
 
 #include "greedy_maxdiv.h"
+#include "grasp_maxdiv.h"
 //#include "gvns_pmsp.h"
 
 const string kInputFolderPath = "./input/";

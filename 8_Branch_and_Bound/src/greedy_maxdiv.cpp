@@ -21,14 +21,14 @@ Solution GreedyMaxDiversity::Solve() {
   vector<Element> remaining_elements = problem_->GetElements();
   Solution solution(problem_);  
   Element current_center;
-  //cout << "Going into loop...\n";
+
   while (solution.GetSolutionSize() < m_value_) {
     current_center = CalculateGravityCenter(remaining_elements);
-    //cout << "Current center: "; current_center.Show(); // DEBUG
     Element furthest_element = GetFurthestElement(remaining_elements, current_center);
     solution.AddElement(furthest_element);
-    EraseElement(remaining_elements, furthest_element);    
+    EraseElement(remaining_elements, furthest_element);
   }
   solution.UpdateDiversity();
+  if (perform_local_search_) return LocalSearch(solution);
   return solution;
 }

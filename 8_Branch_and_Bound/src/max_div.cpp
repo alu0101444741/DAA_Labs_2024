@@ -12,6 +12,32 @@
 #include "max_div.h"
 
 /**
+ * @brief Build the initial solution for the Maximum Diversity algorithms.
+ * 
+ * @param problem - Problem information
+ * @param candidate_list_size - Maximum candidate list size
+ */
+Solution MaximumDiversity::ConstructInitialSolution(Problem* problem, unsigned candidate_list_size) {
+  Solution current_solution(problem);
+  vector<Element> problem_elements(problem->GetElements());
+
+  while(current_solution.GetSolutionSize() < m_value_) {
+    // Calculo el centro
+    Element current_center = CalculateGravityCenter(problem_elements);
+
+    // Creo la lista de candidatos con los N más alejados
+    vector<Element> candidate_list = GetTheNFurthestElements(candidate_list_size, problem_elements, current_center);
+
+    // Elijo uno aleatorio, lo incluyo en la solucion y lo elimino de los restantes
+    Element element_to_add = SelectRandomElement(candidate_list);
+    current_solution.AddElement(element_to_add);
+
+    EraseElement(problem_elements, element_to_add);
+  } 
+  return current_solution;
+}
+
+/**
  * @brief Calculate the gravity center of a set of elements.
  * @param elements A vector of Element objects representing the elements.
  * @return An Element object representing the gravity center.
@@ -48,6 +74,24 @@ Element MaximumDiversity::GetFurthestElement(const vector<Element>& elements, co
     }
   }
   return furthest_element;
+}
+
+/**
+ * @brief Get the N furthest elements from a given center element.
+ * @param number_of_elements Amount of elements to get
+ * @param elements A vector of Element objects representing the elements.
+ * @param center An Element object representing the center element.
+ * @return The furthest Element object from the center.
+ */
+vector<Element> MaximumDiversity::GetTheNFurthestElements(unsigned number_of_elements, const vector<Element>& elements, const Element& center) const {
+  vector<Element> furthest_elements;
+  vector<Element> current_elements = problem_->GetElements();
+  for (unsigned i = 0; i < number_of_elements; ++i) {
+    Element current_furthest_element = GetFurthestElement(current_elements, center);
+    EraseElement(current_elements, current_furthest_element);
+    furthest_elements.push_back(current_furthest_element);
+  }
+  return furthest_elements;
 }
 
 /**

@@ -21,15 +21,16 @@
  */
 void test_algorithm(MaximumDiversity* maxdiv_algorithm, const string& filename, const string& elements,  const string& dimension) {
   maxdiv_algorithm->InitializeProblem(kInputFolderPath + "/" + filename + kInputFileExtension);
-  auto start = Clock::now();  
+  auto start = Clock::now();
   Solution solution = maxdiv_algorithm->Solve();
   //maxdiv_algorithm->GetProblem()->ShowInfo();
   auto stop = Clock::now();
-  auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-  solution.Show("[" + filename + "]", true);
-  
-  cout << kFourSpaces + "CPU: " << duration.count() << " ms" << kFourSpaces;
-  //cout << "m: " << machines << " n: " << tasks << endl;
+  auto duration = chrono::duration_cast<chrono::microseconds>(stop - start); 
+  solution.Show(
+    "[" + filename + "]",
+    "CPU: " + to_string(duration.count()) + " " + kMicro + "s",
+    true
+  );
 }
 
 /** 
@@ -41,18 +42,19 @@ void test_maximum_diversity_algorithms(unsigned m_value) {
   vector<string> dimension = {"2",  "3"};
   pair<unsigned, unsigned> m_values(2, 5);
   
-  //unsigned maximum_iterations = 50, candidate_list_size = 3, k_maximum = 2;
+  unsigned maximum_iterations = 50, candidate_list_size = 3, k_maximum = 2;
   vector<MaximumDiversity*> algorithms = {
-    new GreedyMaxDiversity(),
-    //new GraspMaxDiversity(m_value, maximum_iterations, candidate_list_size, true, 1),
-    //new GvnsMaxDiversity(m_value, 10, candidate_list_size, k_maximum),    
+    //new GreedyMaxDiversity(),
+    //new GreedyMaxDiversity(true),
+    new GraspMaxDiversity(maximum_iterations, candidate_list_size, true),
+    //new GvnsMaxDiversity(10, candidate_list_size, k_maximum),    
   };
 
   for (const auto& algorithm : algorithms) {
     cout << "<<< " << algorithm->GetAlgorithmName() << " >>>\n"; 
     for (const string& d : dimension) {
       for (const string& e : elements) {     
-        for (unsigned i = m_values.first; i <= m_values.second; ++i) {
+        for (unsigned i = m_values.first; i <= m_values.second; ++i) { //cout << "Setting subset\n"; // DEBUG
           algorithm->SetSubsetSize(i);
           test_algorithm(algorithm, "max_div_" + e + "_" + d, e, d);
           cout << endl;

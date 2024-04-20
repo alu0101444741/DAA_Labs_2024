@@ -17,9 +17,16 @@
 
 /** @brief Greedy Parallel Machine Scheduling Problem solver. */
 class GreedyMaxDiversity: public MaximumDiversity {
+private:  
+  bool perform_local_search_;
 public:  
   /** @brief Constructor for the MGreedyMaxDiversity solver. */
-  GreedyMaxDiversity() { algorithm_name_ = "Greedy"; problem_ = new Problem(); }  
+  GreedyMaxDiversity(bool perform_local_search = false)
+  : perform_local_search_(perform_local_search) {
+    algorithm_name_ = "Greedy";
+    if (perform_local_search_) algorithm_name_ += " (with local search)";
+    problem_ = new Problem();
+  }  
 
   /**
    * @brief Solve the Maximum Diversity using a greedy algorithm.

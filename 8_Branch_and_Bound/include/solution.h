@@ -29,16 +29,43 @@ public:
    * @brief Constructor for creating a Solution object.
    * @param problem A pointer to the problem instance.
    */
-  Solution(Problem* problem) : problem_(problem) {}
+  Solution(Problem* problem) : problem_(problem), diversity_(0.0) {}
 
   /** @brief Calculate the diversity of the solution based on the distances between elements. */
   void UpdateDiversity();
 
   /**
+   * @brief Get the Element at the specified index.
+   * @param index - element index
+   * @return Element 
+   */
+  Element GetElementAtIndex(unsigned index) const;
+
+  /**
    * @brief Adds a new element to the solution 
    * @param element New element to be added
+   * @param position Position at which to insert the element. It will be added at the end if position has a negative value
    */
-  void AddElement(const Element& element) { solution_.push_back(element); }
+  void AddElement(const Element& element, int position = -1);
+
+  /**
+   * @brief Removes the element on a given position 
+   * @param position Position of the element to be removed
+   */
+  void RemoveElement(unsigned position);
+
+  /**
+   * @brief Check if a given element is included in the solution
+   * @param element - Element to find
+   * @return true if included
+   */
+  bool HasElement(const Element& element_to_find) const;
+
+  /**
+   * @brief Get the diversity (z) value of the solution 
+   * @return diversity value
+   */
+  float GetDiversity() const { return diversity_; }
 
   /**
    * @brief Get the Problem object 
@@ -55,8 +82,9 @@ public:
   /**
    * @brief Display the solution of the maximum diversity problem.
    * @param tag String that will preceed the total time console output
+   * @param cpu String with the execution time of the algorithm
    * @param show_elements Flag indicating whether to display the elements.
    */
-  void Show(const string& tag, bool show_elements = false);
+  void Show(const string& tag, const string& cpu, bool show_elements = false);
 };
 #endif // MAX_DIV_SOLUTION_H_

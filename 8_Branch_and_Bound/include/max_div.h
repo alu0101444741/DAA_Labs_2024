@@ -14,7 +14,7 @@
 #define MAXIMUM_DIVERSITY_H_
 
 #include "max_div_utilities.h"
-#include "solution.h"
+#include "local_search.h"
 
 using namespace std;
 
@@ -25,7 +25,6 @@ protected:
   Solution* solution_;
   string algorithm_name_;
   unsigned m_value_;
-
 public:
   /** @brief Constructor for the Maximum Diversity solver. */
   MaximumDiversity() : algorithm_name_("Maximum Diversity"),  m_value_(0) { }
@@ -68,6 +67,14 @@ public:
 
 protected:
 /**
+ * @brief Build the initial solution for the Maximum Diversity algorithms.
+ * 
+ * @param problem - Problem information
+ * @param candidate_list_size - Maximum candidate list size
+ */
+Solution ConstructInitialSolution(Problem* problem, unsigned candidate_list_size);
+
+/**
  * @brief Calculate the gravity center of a set of elements.
  * @param elements A vector of Element objects representing the elements.
  * @return An Element object representing the gravity center.
@@ -81,6 +88,15 @@ Element CalculateGravityCenter(const vector<Element>& elements) const;
  * @return The furthest Element object from the center.
  */
 Element GetFurthestElement(const vector<Element>& elements, const Element& center) const;
+
+/**
+ * @brief Get the N furthest elements from a given center element.
+ * @param number_of_elements Amount of elements to get
+ * @param elements A vector of Element objects representing the elements.
+ * @param center An Element object representing the center element.
+ * @return The furthest Element object from the center.
+ */
+vector<Element> GetTheNFurthestElements(unsigned number_of_elements, const vector<Element>& elements, const Element& center) const;
 
 /**
  * @brief Erase a specific element from a vector of elements.
