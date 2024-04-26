@@ -19,20 +19,22 @@
  */
 Solution MaximumDiversity::ConstructInitialSolution(Problem* problem, unsigned candidate_list_size) {
   Solution current_solution(problem);
-  vector<Element> problem_elements(problem->GetElements());
+  vector<Element> remaining_elements(problem->GetElements());
+  Element current_center = CalculateGravityCenter(GetElementIndexes(remaining_elements));
 
   while(current_solution.GetSolutionSize() < m_value_) {
-    // Calculo el centro
-    Element current_center = CalculateGravityCenter(problem_elements);
-
     // Creo la lista de candidatos con los N más alejados
-    vector<Element> candidate_list = GetTheNFurthestElements(candidate_list_size, problem_elements, current_center);
+    vector<Element> candidate_list = GetTheNFurthestElements(candidate_list_size, remaining_elements, current_center);
 
     // Elijo uno aleatorio, lo incluyo en la solucion y lo elimino de los restantes
     Element element_to_add = SelectRandomElement(candidate_list);
-    current_solution.AddElement(element_to_add);
 
-    EraseElement(problem_elements, element_to_add);
+    current_solution.AddElement(element_to_add.GetIndex());
+
+    EraseElement(remaining_elements, element_to_add);
+
+    // Calculo el centro
+    current_center = CalculateGravityCenter(current_solution.GetElements());
   } 
   return current_solution;
 }
@@ -42,26 +44,38 @@ Solution MaximumDiversity::ConstructInitialSolution(Problem* problem, unsigned c
  * @param elements A vector of Element objects representing the elements.
  * @return An Element object representing the gravity center.
  */
-Element MaximumDiversity::CalculateGravityCenter(const vector<Element>& elements) const {
-  unsigned dimension = elements[0].GetDimension();
+Element MaximumDiversity::CalculateGravityCenter(const vector<unsigned>& elements_indexes) const {
+  unsigned dimension = problem_->GetDimension();
   vector<float> center(dimension, 0);
-  
-  for (const Element& element : elements) { // Get the sum of each feature
+
+  for (const unsigned& element_index : elements_indexes) { // Get the sum of each feature
     for (unsigned i = 0; i < dimension; ++i) {
-      center[i] += element.GetDimensionValue(i);
+      center[i] += problem_->GetElementOnIndex(element_index).GetDimensionValue(i);
     }
   }
   for (float& value : center) { // Divide each feature by the dimension
     value /= dimension;
   }
-  return Element(center);
+  return Element(0, center);
 }
 
 /**
- * @brief Get the furthest element from a given center element.
+ * @brief Get the indexes of every Element in a vector. 
+ * @param elements A vector of Element objects.
+ * @return A vector containing the indexes of elements in the same order as the input vector.
+ */
+vector<unsigned> MaximumDiversity::GetElementIndexes(const vector<Element>& elements) const {
+  unsigned size = elements.size();
+  vector<unsigned> indexes(size, 0);
+  for (unsigned i = 0; i < size; ++i) indexes[i] = elements[i].GetIndex();
+  return indexes;
+}
+
+/**
+ * @brief Get the furthest element from another Element.
  * @param elements A vector of Element objects representing the elements.
- * @param center An Element object representing the center element.
- * @return The furthest Element object from the center.
+ * @param center An Element object representing the centroid element.
+ * @return The furthest Element object from the given Element.
  */
 Element MaximumDiversity::GetFurthestElement(const vector<Element>& elements, const Element& center) const {
   Element furthest_element = elements[0];
@@ -77,7 +91,7 @@ Element MaximumDiversity::GetFurthestElement(const vector<Element>& elements, co
 }
 
 /**
- * @brief Get the N furthest elements from a given center element.
+ * @brief Get the N furthest elements from a given center Element.
  * @param number_of_elements Amount of elements to get
  * @param elements A vector of Element objects representing the elements.
  * @param center An Element object representing the center element.
@@ -85,7 +99,7 @@ Element MaximumDiversity::GetFurthestElement(const vector<Element>& elements, co
  */
 vector<Element> MaximumDiversity::GetTheNFurthestElements(unsigned number_of_elements, const vector<Element>& elements, const Element& center) const {
   vector<Element> furthest_elements;
-  vector<Element> current_elements = problem_->GetElements();
+  vector<Element> current_elements = elements;
   for (unsigned i = 0; i < number_of_elements; ++i) {
     Element current_furthest_element = GetFurthestElement(current_elements, center);
     EraseElement(current_elements, current_furthest_element);

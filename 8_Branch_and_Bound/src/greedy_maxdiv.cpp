@@ -18,17 +18,21 @@
  * @return Solution representing a set of k-dimensional elements.
  */
 Solution GreedyMaxDiversity::Solve() {
-  vector<Element> remaining_elements = problem_->GetElements();
-  Solution solution(problem_);  
-  Element current_center;
+  Solution solution(problem_);
+  vector<Element> remaining_elements = problem_->GetElements();    
+  Element current_center = CalculateGravityCenter(GetElementIndexes(remaining_elements));
 
   while (solution.GetSolutionSize() < m_value_) {
-    current_center = CalculateGravityCenter(remaining_elements);
+
     Element furthest_element = GetFurthestElement(remaining_elements, current_center);
-    solution.AddElement(furthest_element);
+    
+    solution.AddElement(furthest_element.GetIndex());
+    
     EraseElement(remaining_elements, furthest_element);
+
+    current_center = CalculateGravityCenter(solution.GetElements());
   }
-  solution.UpdateDiversity();
+  //solution.UpdateDiversity();
   if (perform_local_search_) return LocalSearch(solution);
   return solution;
 }

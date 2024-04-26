@@ -22,7 +22,8 @@ private:
 public:  
   /** @brief Constructor for the MGreedyMaxDiversity solver. */
   GreedyMaxDiversity(bool perform_local_search = false)
-  : perform_local_search_(perform_local_search) {
+  : perform_local_search_(perform_local_search)
+  {
     algorithm_name_ = "Greedy";
     if (perform_local_search_) algorithm_name_ += " (with local search)";
     problem_ = new Problem();

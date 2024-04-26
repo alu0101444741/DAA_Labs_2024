@@ -36,9 +36,27 @@ void Problem::CreateFromFile(const string& filename) {
     while (ss >> value) {
       element.push_back(value);
     }
-    elements_.push_back(Element(element));
+    elements_.push_back(Element(i, element));
   }
   file.close();
+
+  CalculateDistances();
+}
+
+/**
+ * @brief Calculates the distances between all pairs of elements and fills
+ * the distances matrix symmetrically.
+ */
+void Problem::CalculateDistances() {
+  unsigned matrix_size = elements_.size();
+  distances_ = vector<vector<float>>(matrix_size, vector<float>(matrix_size, 0.0));
+  for (unsigned i = 0; i < matrix_size; ++i) {
+    for (unsigned j = i + 1; j < matrix_size; ++j) {
+      float distance = elements_[i].DistanceTo(elements_[j]);
+      distances_[i][j] = distance;
+      distances_[j][i] = distance;
+    }
+  }
 }
 
 /** @brief Prints the problem information: elements and their dimension */

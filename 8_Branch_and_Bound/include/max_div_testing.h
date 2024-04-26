@@ -21,26 +21,36 @@ const string kInputFileExtension = ".txt";
 
 using TimePoint = std::chrono::system_clock::time_point;
 using Clock = chrono::high_resolution_clock;
-const string kMicro = "\u00B5";
 
 //const unsigned kMaximumExecutionTime = 300000000;
 //const int kExecutionTimeCode = -3;
 
-/**
- * @brief Test the performance of a Maximum Diversity algorithm using the given instance file.
- * @param maxdiv_algorithm Pointer to the MaximumDiversity algorithm instance.
- * @param filename Name of the instance file.
- * @param elements Number of elements as a string
- * @param dimension Dimension (K) of the elements as a string
- */
-void test_algorithm(MaximumDiversity* maxdiv_algorithm, const string& filename, const string& elements,  const string& dimension);
+/** @brief Class to test algotithms behaviour and performance */
+class Tester {
+private:
+  vector<MaximumDiversity*> algorithms_;
+  vector<string> elements_, dimension_;
+  vector<unsigned> m_values_, maximum_iterations_, candidate_list_sizes_;
 
-/** 
- * @brief Execute Maximum Diversity algorithms and measure the time taken by each of them.
- * @param m_value - Size of the solution
- */
-void test_maximum_diversity_algorithms(unsigned m_value);
+public:
+  /** @brief Constructor for the Tester class.  */
+  Tester();
 
-//void test_grasp_localsearch();
+  /** 
+   * @brief Execute MaximumDiversity algorithms and measure the time taken by each of them.
+   * @param show_elements Flag to show the S set that contains all the elements 
+   */
+  void TestMaximumDiversityAlgorithms(bool show_elements = false);
 
+private:
+  /**
+   * @brief Test the performance of a Maximum Diversity algorithm using the given instance file.
+   * @param maxdiv_algorithm Pointer to the MaximumDiversity algorithm instance.
+   * @param filename Name of the instance file.
+   */
+  void TestAlgorithm(MaximumDiversity* maxdiv_algorithm, const string& filename, unsigned iterations, unsigned candidate_list_size);
+
+  /** @brief Print the S set that contains all the elements on the problem object. */
+  void ShowElements(Problem* problem);
+};
 #endif // TEST_UTILITIES_H_

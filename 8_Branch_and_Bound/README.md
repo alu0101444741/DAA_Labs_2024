@@ -1,21 +1,51 @@
-### Práctica 8: . Algoritmos aproximados
+## Práctica 8: Ramificación y Poda. Algoritmos aproximados
 
-#### Entrega 16/04/2024
-Cálculo erróneo del TCT. No se multiplicaba por k (en este caso, tamaño de la máquina menos el índice de tarea actual)
-```cpp
-// Antes
-    machine_completion_time += ((machine_size - j) * (setup_time + solution_[machine_index][j]->time_));
-// Ahora
-    machine_completion_time += (setup_time + solution_[machine_index][j]->time_);
-```
-De igual manera los cálculos siguen siendo incorrectos. Debo buscar donde está la causa.
+### Entrega 30/04/2024
 
-#### Entrega 09/04/2024
-Nada que reseñar.
 
-##### Clase Solución:
-* General: Incluir las operaciones que se realizan en la misma (insertar, swap, calcularTCT) para simplificar su manipulación y mejorar la legibilidad de los bucles de los algoritmos. **[Hecho]**
-* TCT: Muchas veces el ćalculo o actualización del TCT incluye cálculos innecesarios. Por ello, se incluirá un atributo total_TCT y el TCT de cada máquina. **[Hecho]** Se actualizará el valor de cada máquina cada vez que se realice un movimiento en ella.
+### Entrega 23/04/2024
 
-##### Porcentajes de mejora:
-* GRASP: Para cada iteración, almacenar el porcentaje de mejora de la solución con respecto a su mejora (LocalSearch). **[Hecho]** Adicionalmente, hay código comentado para ejecutar todas las búsquedas locales en el mismo GRASP y guardar la mejora de todas ellas.
+* Cambiar la Solución para almacenar **índices** en vez de **elementos**. \[**HECHO**\]
+* Búsqueda local.
+    No recalcular el valor de "z" en función de TODA la solución, sino restar el valor del punto eliminado y sumar el nuevo valor. Esto se puede hacer fácil usando la matriz del punto siguiente.
+    \[**HECHO**\] He creado una matriz de distancias para Problema que se inicializa al crearse el problema.
+
+#### Conjuntos S
+[max_div_15_2] <br> 
+S = {   **[0]** {9.11, 3.23}, **[1]** {8.41, 9.98}, **[2]** {7.5, 6.81}, **[3]** {9.96, 8.17}, **[4]** {9.71, 6.49},  <br>
+&emsp;  **[5]** {0.16, 4.62}, **[6]** {0.58, 1.29}, **[7]** {1.88, 3.24}, **[8]** {8.65, 9.98}, **[9]** {1.35, 7.11},  <br>
+&emsp;  **[10]** {1.59, 1.57}, **[11]** {7.14, 6.28}, **[12]** {4.04, 3.97}, **[13]** {4.23, 0.85}, **[14]** {0.46, 3.05}<br>
+&emsp; } <br> 
+[max_div_20_2] <br> 
+S = {   **[0]** {5.43, 5.9}, **[1]** {3.47, 9.43}, **[2]** {1.16, 4.47}, **[3]** {7.19, 6.2}, **[4]** {6.15, 8.59},  <br>
+&emsp;  **[5]** {6.84, 4.82}, **[6]** {7.35, 3.88}, **[7]** {8.14, 3.75}, **[8]** {8.57, 8.36}, **[9]** {1.53, 6.79},  <br>
+&emsp;  **[10]** {8.45, 3.42}, **[11]** {5.36, 7.06}, **[12]** {8.78, 7.43}, **[13]** {1.97, 3.5}, **[14]** {3.1, 5.57},  <br>
+&emsp;  **[15]** {5.58, 5.46}, **[16]** {1.48, 6.32}, **[17]** {0.63, 5.96}, **[18]** {8.67, 3.17}, **[19]** {7.75, 8.48}<br>
+&emsp; } <br> 
+[max_div_30_2] <br> 
+S = {   **[0]** {9.32, 5.14}, **[1]** {1.91, 9.6}, **[2]** {3.45, 7.04}, **[3]** {4.42, 5.73}, **[4]** {7.95, 3},  <br>
+&emsp;  **[5]** {8.08, 4.73}, **[6]** {3.81, 2.5}, **[7]** {6.8, 2.94}, **[8]** {9.84, 8.96}, **[9]** {5.65, 9.55},  <br>
+&emsp;  **[10]** {8, 1.53}, **[11]** {2.07, 6.84}, **[12]** {0.65, 3.26}, **[13]** {2.83, 1.16}, **[14]** {2.93, 9.25},  <br>
+&emsp;  **[15]** {4.9, 8.57}, **[16]** {7.01, 3.44}, **[17]** {1.37, 8.09}, **[18]** {7.93, 7.11}, **[19]** {5.73, 2.29},  <br>
+&emsp;  **[20]** {1.05, 2.84}, **[21]** {4.59, 3.02}, **[22]** {8.4, 7.98}, **[23]** {6.24, 6.59}, **[24]** {7.26, 7.45},  <br>
+&emsp;  **[25]** {2.04, 1.83}, **[26]** {2.19, 6.03}, **[27]** {2.07, 0.27}, **[28]** {3.99, 7.85}, **[29]** {2.02, 1.36}<br>
+&emsp; } <br> 
+[max_div_15_3] <br> 
+S = {   **[0]** {0.46, 4.48, 6.17}, **[1]** {6.32, 2.2, 4.95}, **[2]** {1.48, 2.7, 3.63}, **[3]** {1.15, 9.21, 3.11}, **[4]** {1.71, 1.95, 9.22},  <br>
+&emsp;  **[5]** {2.48, 7.08, 4.37}, **[6]** {5.17, 1.39, 0.91}, **[7]** {2.15, 2.48, 6.87}, **[8]** {0.3, 0.92, 4.23}, **[9]** {8.67, 9.58, 4.39},  <br>
+&emsp;  **[10]** {6.65, 9.45, 1.02}, **[11]** {9.88, 9.88, 6.26}, **[12]** {8.42, 9.05, 4.39}, **[13]** {9.47, 3.56, 1.83}, **[14]** {0.98, 6.04, 2.47}<br>
+&emsp; } <br> 
+[max_div_20_3] <br> 
+S = {   **[0]** {4.84, 9.69, 4.9}, **[1]** {3.86, 6.33, 4.46}, **[2]** {0.83, 7.06, 3.34}, **[3]** {2.63, 2.91, 8.86}, **[4]** {5.02, 5.93, 3.16},  <br>
+&emsp;  **[5]** {4.32, 4.61, 6.17}, **[6]** {3.61, 4.63, 2.91}, **[7]** {8.87, 9.56, 5.34}, **[8]** {6.92, 9.54, 4.14}, **[9]** {6.39, 6.23, 5.71},  <br>
+&emsp;  **[10]** {7.66, 8.13, 2.01}, **[11]** {8.02, 0.12, 3.56}, **[12]** {9.81, 2.05, 1.83}, **[13]** {0.65, 3.76, 9.07}, **[14]** {8.01, 3.68, 9.58},  <br>
+&emsp;  **[15]** {7.39, 2.44, 5.52}, **[16]** {9.6, 2.02, 9}, **[17]** {6.51, 0.79, 6.85}, **[18]** {4.4, 3.24, 4.43}, **[19]** {0.96, 7.43, 5.55}<br>
+&emsp; } <br> 
+[max_div_30_3] <br> 
+S = {   **[0]** {0.92, 3.37, 5.61}, **[1]** {4.19, 7.95, 7.62}, **[2]** {8.32, 2.05, 2.68}, **[3]** {9.99, 4.4, 9.76}, **[4]** {9.16, 7.28, 1.93},  <br>
+&emsp;  **[5]** {8.32, 0.47, 8.98}, **[6]** {6.71, 0.35, 9.42}, **[7]** {8.39, 1.48, 1.35}, **[8]** {7.47, 8.56, 9.58}, **[9]** {3.06, 4.78, 5.41},  <br>
+&emsp;  **[10]** {3.88, 9.46, 5.65}, **[11]** {6.97, 5.89, 3.84}, **[12]** {7.08, 4.64, 3.09}, **[13]** {6.75, 0.07, 1.8}, **[14]** {7.54, 8.93, 9.66},  <br>
+&emsp;  **[15]** {6.73, 2.11, 9.03}, **[16]** {8.06, 9.59, 0.27}, **[17]** {9.32, 4.38, 8.02}, **[18]** {2.04, 4.68, 7.22}, **[19]** {7.47, 2.93, 8.88},  <br>
+&emsp;  **[20]** {8.87, 2.18, 3.92}, **[21]** {5.11, 2.34, 9.84}, **[22]** {9.85, 4.76, 7.32}, **[23]** {1.53, 8.09, 9.56}, **[24]** {1.17, 6.59, 5.8},  <br>
+&emsp;  **[25]** {9.4, 4.4, 8.06}, **[26]** {3.26, 6.63, 1.22}, **[27]** {6.04, 8.96, 7.83}, **[28]** {4.33, 7.35, 3.37}, **[29]** {8.63, 6.64, 2.33}<br>
+&emsp; } <br> 

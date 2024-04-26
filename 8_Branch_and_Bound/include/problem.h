@@ -26,6 +26,7 @@ class Problem {
 private:
   vector<Element> elements_;
   unsigned dimension_;
+  vector<vector<float>> distances_;
 public:
   /** @brief Constructor for the Problem class. */
   Problem() {}  
@@ -43,12 +44,39 @@ public:
   vector<Element> GetElements() const { return elements_; }
 
   /**
+   * @brief Retrieves the stored element at a given index.
+   * @returns Elements stored.
+   */
+  Element GetElementOnIndex(unsigned index) const {
+    index_validation(index, elements_.size(), "Problem");
+    return elements_[index];
+  }
+
+  /**
    * @brief Retrieves the dimension of the elements (K).
    * @returns The dimension of the elements.
    */
   unsigned GetDimension() const { return dimension_; }
 
+  /**
+   * @brief Retrieves the distance between two elements from the distances matrix.
+   * @param first_index First element index
+   * @param second_index Second element index
+   * @returns Distance between lements.
+   */
+  float GetDistance(unsigned first_index, unsigned second_index) const {
+    index_validation(first_index, elements_.size(), "Problem");
+    index_validation(second_index, elements_.size(), "Problem");
+    return distances_[first_index][second_index];
+  }
+
   /** @brief Prints the problem information: elements and their dimension */
   void ShowInfo();
+private:
+  /**
+   * @brief Calculates the distances between all pairs of elements and fills
+   * the distances matrix symmetrically.
+   */
+  void CalculateDistances();
 };
 #endif // MAX_DIV_PROBLEM_H_

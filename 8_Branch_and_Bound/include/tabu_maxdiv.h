@@ -7,42 +7,42 @@
  * @author Roberto Carrazana Pernia
  * @date: Apr 20 2024
  *
- * @brief GRASP Maximum Diversity solver class definition.
+ * @brief Tabu search Maximum Diversity solver class definition.
  * 
  */
-#ifndef GRASP_MAX_DIV_H_
-#define GRASP_MAX_DIV_H_
+#ifndef TABU_MAX_DIV_H_
+#define TABU_MAX_DIV_H_
 
 #include "max_div.h"
 
-/** @brief GRASP Maximum Diversity Problem solver. */
-class GraspMaxDiversity: public MaximumDiversity {
+/** @brief Tabu Search Maximum Diversity Problem solver. */
+class TabuMaxDiversity: public MaximumDiversity {
 private:
   bool perform_local_search_;
 public:  
   /** 
-   * @brief Constructor for the GraspMaxDiversity solver.
+   * @brief Constructor for the TabuMaxDiversity solver.
    * @param maximum_iterations - Number of iterations for the grasp algorithm
    * @param candidate_list_size - Size of the list of candidates (LRC)
    * @param perform_local_search - Will not perform any local search if set to 'false'
    */
-  GraspMaxDiversity(
+  TabuMaxDiversity(
     unsigned maximum_iterations,
     unsigned candidate_list_size,
     bool perform_local_search = false
   ) : perform_local_search_(perform_local_search)
   {
-    algorithm_name_ = "GRASP";
+    algorithm_name_ = "TabuSearch";
     maximum_iterations_ = maximum_iterations;
     candidate_list_size_ = candidate_list_size;
     problem_ = new Problem();
   }  
 
   /**
-   * @brief Solve the Maximum Diversity using a GRASP algorithm.
+   * @brief Solve the Maximum Diversity using a Tabu Search algorithm.
    * @return Solution representing the subset of elements that has the maximum diversity.
    */
   Solution Solve();  
 };
 
-#endif /* GREEDY_MAX_DIV_H_ */
+#endif /* TABU_MAX_DIV_H_ */

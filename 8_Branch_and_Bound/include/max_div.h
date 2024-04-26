@@ -25,6 +25,7 @@ protected:
   Solution* solution_;
   string algorithm_name_;
   unsigned m_value_;
+  unsigned maximum_iterations_, candidate_list_size_;
 public:
   /** @brief Constructor for the Maximum Diversity solver. */
   MaximumDiversity() : algorithm_name_("Maximum Diversity"),  m_value_(0) { }
@@ -46,6 +47,12 @@ public:
    * @param m_value - The new solution size.
    */
   void SetSubsetSize(unsigned m_value) { m_value_ = m_value; }
+
+  /**
+   * @brief Setter for the maximum iterations.
+   * @param m_value - The new maximum iterations value.
+   */
+  void SetMaximumIterations(unsigned iterations) { maximum_iterations_ = iterations; }
 
   /**
    * @brief Setter for the problem.
@@ -79,7 +86,14 @@ Solution ConstructInitialSolution(Problem* problem, unsigned candidate_list_size
  * @param elements A vector of Element objects representing the elements.
  * @return An Element object representing the gravity center.
  */
-Element CalculateGravityCenter(const vector<Element>& elements) const;
+Element CalculateGravityCenter(const vector<unsigned>& elements) const;
+
+/**
+ * @brief Get the indexes of every Element in a vector. 
+ * @param elements A vector of Element objects.
+ * @return A vector containing the indexes of elements in the same order as the input vector.
+ */
+vector<unsigned> GetElementIndexes(const vector<Element>& elements) const;
 
 /**
  * @brief Get the furthest element from a given center element.

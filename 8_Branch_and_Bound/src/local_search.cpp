@@ -12,39 +12,45 @@
 
 #include "local_search.h"
 
+/**
+ * @brief Local search algorithm to improve a given solution.
+ * @param solution - The initial solution to be improved.
+ * @return The local optimum solution found.
+ */
 Solution LocalSearch(const Solution& solution) {
   Solution current_solution = solution;
   Solution best_solution = solution;
-  vector<Element> all_elements = solution.GetProblem()->GetElements();
-  vector<bool> elements_included = vector<bool>(all_elements.size(), false);
+  unsigned solution_size = solution.GetSolutionSize();
+  //vector<Element> all_elements = solution.GetProblem()->GetElements();
+  vector<unsigned> all_elements_indexes(solution_size, 0);
+  for (unsigned i = 1; i < all_elements_indexes.size(); ++i) all_elements_indexes[i] = i;
 
+  vector<bool> elements_included = vector<bool>(all_elements_indexes.size(), false);
   // Check every element that is included in the current solution
-  for (unsigned i = 0; i < all_elements.size(); ++i) {
-    if (solution.HasElement(all_elements[i])) elements_included[i] = true;
+  for (unsigned i = 0; i < all_elements_indexes.size(); ++i) {
+    all_elements_indexes[i] = solution.HasElement(all_elements_indexes[i]);
   }
   
-  // Para cada elemento de la solucion actual
-  // Intercambiarlo por uno de los restantes
+  // Para cada elemento de la solucion actual, intercambiarlo por uno de los restantes
   bool improved = true;
   while (improved) {
     improved = false;
-    for (unsigned solution_index = 0; solution_index < all_elements.size(); ++ solution_index) {
-      for (unsigned element_index = 0; element_index < all_elements.size(); ++ element_index) {
-        // Si el elemento está incluido, se ignora
-        if (elements_included[element_index]) continue;
-        Element current_element = solution.GetElementAtIndex(solution_index);
+    for (unsigned solution_index = 0; solution_index < solution_size; ++ solution_index) {
+      for (unsigned element_index = 0; element_index < all_elements_indexes.size(); ++ element_index) {        
+        if (elements_included[element_index]) continue; // Si el elemento está incluido, se ignora
+        //Element current_element = solution.GetElementAtIndex(solution_index);
 
         current_solution.RemoveElement(solution_index);
-        current_solution.AddElement(all_elements[element_index], solution_index);
-        current_solution.UpdateDiversity();
+        current_solution.AddElement(all_elements_indexes[element_index], solution_index);
+        //current_solution.UpdateDiversity();
 
         if (current_solution.GetDiversity() > best_solution.GetDiversity()) {
           best_solution = current_solution;
           improved = true;
         } else {
           current_solution.RemoveElement(solution_index);
-          current_solution.AddElement(current_element, solution_index);
-          current_solution.UpdateDiversity();
+          current_solution.AddElement(solution.GetElementAtIndex(solution_index), solution_index);
+          //current_solution.UpdateDiversity();
         }
       }
       if (improved) break;

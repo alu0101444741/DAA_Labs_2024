@@ -7,17 +7,17 @@
  * @author Roberto Carrazana Pernia
  * @date: Apr 20 2024
  *
- * @brief GRASP Maximum Diversity solver class implementation.
+ * @brief Greedy Maximum Diversity solver class implementation.
  * 
  */
 
-#include "grasp_maxdiv.h"
+#include "tabu_maxdiv.h"
 
 /**
- * @brief Solve the Maximum Diversity using a GRASP algorithm.
+ * @brief Solve the Maximum Diversity using a Tabu Search algorithm.
  * @return Solution representing a set of k-dimensional elements.
  */
-Solution GraspMaxDiversity::Solve() {
+Solution TabuMaxDiversity::Solve() {
   vector<Element> remaining_elements = problem_->GetElements();
   Solution best_solution(problem_);
   Solution current_solution(problem_);  

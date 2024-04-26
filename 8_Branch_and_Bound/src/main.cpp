@@ -18,12 +18,8 @@
 /** @brief Main function */
 int main(int argc, char* argv[]) {
 
-  unsigned m_value = 5;
-
-  test_maximum_diversity_algorithms(m_value);
-
-  //test_grasp_localsearch();
-  //test_modificacion();
+  Tester tester;
+  tester.TestMaximumDiversityAlgorithms(false);
 
   return 0;
 };
