@@ -17,20 +17,16 @@
 
 /** @brief GRASP Maximum Diversity Problem solver. */
 class GraspMaxDiversity: public MaximumDiversity {
-private:
-  bool perform_local_search_;
 public:  
   /** 
    * @brief Constructor for the GraspMaxDiversity solver.
    * @param maximum_iterations - Number of iterations for the grasp algorithm
    * @param candidate_list_size - Size of the list of candidates (LRC)
-   * @param perform_local_search - Will not perform any local search if set to 'false'
    */
   GraspMaxDiversity(
     unsigned maximum_iterations,
-    unsigned candidate_list_size,
-    bool perform_local_search = false
-  ) : perform_local_search_(perform_local_search)
+    unsigned candidate_list_size
+  )
   {
     algorithm_name_ = "GRASP";
     maximum_iterations_ = maximum_iterations;

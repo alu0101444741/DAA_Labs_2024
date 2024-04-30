@@ -1,7 +1,7 @@
 ## Práctica 8: Ramificación y Poda. Algoritmos aproximados
 
 ### Entrega 30/04/2024
-
+* Búsqueda Tabú. Peores resultados que con GRASP
 
 ### Entrega 23/04/2024
 

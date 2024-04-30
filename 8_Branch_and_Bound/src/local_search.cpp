@@ -21,14 +21,14 @@ Solution LocalSearch(const Solution& solution) {
   Solution current_solution = solution;
   Solution best_solution = solution;
   unsigned solution_size = solution.GetSolutionSize();
-  //vector<Element> all_elements = solution.GetProblem()->GetElements();
-  vector<unsigned> all_elements_indexes(solution_size, 0);
-  for (unsigned i = 1; i < all_elements_indexes.size(); ++i) all_elements_indexes[i] = i;
 
-  vector<bool> elements_included = vector<bool>(all_elements_indexes.size(), false);
-  // Check every element that is included in the current solution
-  for (unsigned i = 0; i < all_elements_indexes.size(); ++i) {
-    all_elements_indexes[i] = solution.HasElement(all_elements_indexes[i]);
+  vector<unsigned> all_elements_indexes(solution_size, 0);
+  vector<bool> elements_included = vector<bool>(solution_size, false);
+  
+  for (unsigned i = 0; i < solution_size; ++i) {
+    all_elements_indexes[i] = i;
+    // Check every element that is included in the current solution
+    elements_included[i] = solution.HasElement(all_elements_indexes[i]);
   }
   
   // Para cada elemento de la solucion actual, intercambiarlo por uno de los restantes
@@ -36,21 +36,23 @@ Solution LocalSearch(const Solution& solution) {
   while (improved) {
     improved = false;
     for (unsigned solution_index = 0; solution_index < solution_size; ++ solution_index) {
-      for (unsigned element_index = 0; element_index < all_elements_indexes.size(); ++ element_index) {        
+      for (unsigned element_index = 0; element_index < solution_size; ++ element_index) {        
         if (elements_included[element_index]) continue; // Si el elemento está incluido, se ignora
-        //Element current_element = solution.GetElementAtIndex(solution_index);
 
-        current_solution.RemoveElement(solution_index);
+        current_solution.RemoveElement(current_solution.GetElementAtIndex(solution_index));
         current_solution.AddElement(all_elements_indexes[element_index], solution_index);
-        //current_solution.UpdateDiversity();
+
+        elements_included[solution_index] = false;
+        elements_included[element_index] = true;
 
         if (current_solution.GetDiversity() > best_solution.GetDiversity()) {
           best_solution = current_solution;
           improved = true;
         } else {
-          current_solution.RemoveElement(solution_index);
+          current_solution.RemoveElement(all_elements_indexes[element_index]);
           current_solution.AddElement(solution.GetElementAtIndex(solution_index), solution_index);
-          //current_solution.UpdateDiversity();
+          elements_included[solution_index] = true;
+          elements_included[element_index] = false;
         }
       }
       if (improved) break;

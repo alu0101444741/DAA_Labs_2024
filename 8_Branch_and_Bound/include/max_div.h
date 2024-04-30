@@ -13,7 +13,6 @@
 #ifndef MAXIMUM_DIVERSITY_H_
 #define MAXIMUM_DIVERSITY_H_
 
-#include "max_div_utilities.h"
 #include "local_search.h"
 
 using namespace std;
@@ -94,6 +93,13 @@ Element CalculateGravityCenter(const vector<unsigned>& elements) const;
  * @return A vector containing the indexes of elements in the same order as the input vector.
  */
 vector<unsigned> GetElementIndexes(const vector<Element>& elements) const;
+
+/**
+ * @brief Get the elements indexes that are not included in a given Solution 
+ * @param solution 
+ * @return array of indexes
+ */
+vector<unsigned> GetRemainingElements(const Solution& solution) const;
 
 /**
  * @brief Get the furthest element from a given center element.

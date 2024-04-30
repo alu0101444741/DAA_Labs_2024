@@ -17,7 +17,7 @@
 #include <sstream>
 #include <regex>
 
-#include "max_div_utilities.h"
+#include "./utilities/max_div_utilities.h"
 
 using namespace std;
 

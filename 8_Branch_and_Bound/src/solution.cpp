@@ -12,33 +12,8 @@
 
 #include "solution.h"
 
-/** @brief Calculate the diversity of the solution based on the distances between elements. */
-void Solution::UpdateDiversity() {
-  /*
-  unsigned n = solution_.size(); // solution_ --> array de elementos
-  diversity_ = 0.0;
-  for (unsigned i = 0; i < n - 1; ++i) {
-    for (unsigned j = i + 1; j < n; ++j) {
-      diversity_ += solution_[i].DistanceTo(solution_[j]); // distancia euclídea
-    }
-  }
-  */
-}
-
-/**
- * @brief Check if a given element is included in the solution
- * @param element - Element to find
- * @return true if included
- */
-/*
-bool Solution::HasElement(const Element& element) const {
-  auto it = find(solution_.begin(), solution_.end(), element);
-  if (it != solution_.end()) return true;
-  return false;
-}
-*/
 bool Solution::HasElement(unsigned element_index) const {
-  index_validation(element_index, solution_.size(), "Solution");
+  //index_validation(element_index, solution_.size(), "Solution");
   for (const unsigned& index : solution_) if (index == element_index) return true;
   return false;
 }
@@ -49,7 +24,6 @@ bool Solution::HasElement(unsigned element_index) const {
  * @return Element 
  */
 unsigned Solution::GetElementAtIndex(unsigned index) const {
-  //if (index < 0 || index >= solution_.size()) throw runtime_error("[Solution] Index out of range");
   index_validation(index, solution_.size(), "Solution");
   return solution_[index];
 }
@@ -74,12 +48,36 @@ void Solution::AddElement(unsigned element_index, int position) {
  * @brief Removes the element on a given position 
  * @param position Position of the element to be removed
  */
-void Solution::RemoveElement(unsigned position) {
+void Solution::RemoveElement(unsigned element_index) {
   // For each remaining element, substract it distance with the one to be erased
   for (const unsigned& index : solution_) {
-    diversity_ -= problem_->GetDistance(solution_[position], index);
+    diversity_ -= problem_->GetDistance(element_index, index);
   }
-  solution_.erase(solution_.begin() + position);
+  auto it = find(solution_.begin(), solution_.end(), element_index);
+  if (it != solution_.end()) { // Eliminar el elemento encontrado
+    solution_.erase(it);
+  } else {
+    throw runtime_error("[Solution => RemoveElement] Value not found\n");
+  }
+}
+
+/**
+ * @brief Replace one element from the solution with another one which is not included. 
+ * @param first_index Element to be removed
+ * @param second_index Element to be included
+ */
+void Solution::ReplaceElement(unsigned first_index, unsigned second_index) {
+  if (HasElement(first_index) && HasElement(second_index)) {
+    throw runtime_error("[Solution => ReplaceElement] Both elements are included.");
+  }
+  if (HasElement(first_index)) {
+    RemoveElement(first_index);
+    AddElement(second_index);
+  }
+  if (HasElement(second_index)) {
+    RemoveElement(second_index);
+    AddElement(first_index);
+  }
 }
 
 /**

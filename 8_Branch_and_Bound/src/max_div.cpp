@@ -72,6 +72,21 @@ vector<unsigned> MaximumDiversity::GetElementIndexes(const vector<Element>& elem
 }
 
 /**
+ * @brief Get the elements indexes that are not included in a given Solution 
+ * @param solution 
+ * @return array of indexes
+ */
+vector<unsigned> MaximumDiversity::GetRemainingElements(const Solution& solution) const {
+  vector<unsigned> remaining_elements;
+  for (unsigned i = 0; i < problem_->GetElements().size(); ++i) {
+    if (!solution.HasElement(i)) {
+      remaining_elements.push_back(i);
+    }
+  }
+  return remaining_elements;
+}
+
+/**
  * @brief Get the furthest element from another Element.
  * @param elements A vector of Element objects representing the elements.
  * @param center An Element object representing the centroid element.

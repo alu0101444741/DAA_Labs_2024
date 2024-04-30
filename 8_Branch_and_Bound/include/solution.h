@@ -13,7 +13,6 @@
 #ifndef MAX_DIV_SOLUTION_H_
 #define MAX_DIV_SOLUTION_H_
 
-#include "max_div_utilities.h"
 #include "problem.h"
 
 using namespace std;
@@ -41,12 +40,11 @@ public:
    */
   unsigned GetElementAtIndex(unsigned index) const;
 
-  //vector<Element> GetElements() const { return solution_; }
   vector<unsigned> GetElements() const { return solution_; }
 
   /**
    * @brief Adds a new element to the solution 
-   * @param element New element to be added
+   * @param element Element to be added
    * @param position Position at which to insert the element. It will be added at the end if position has a negative value
    */
   //void AddElement(const Element& element, int position = -1);
@@ -54,9 +52,16 @@ public:
 
   /**
    * @brief Removes the element on a given position 
-   * @param position Position of the element to be removed
+   * @param element_index Element to be removed
    */
-  void RemoveElement(unsigned position);
+  void RemoveElement(unsigned element_index);
+
+  /**
+   * @brief Replace one element from the solution with another one which is not included. 
+   * @param first_index Element to be removed
+   * @param second_index Element to be included
+   */
+  void ReplaceElement(unsigned first_index, unsigned second_index);
 
   /**
    * @brief Check if a given element is included in the solution

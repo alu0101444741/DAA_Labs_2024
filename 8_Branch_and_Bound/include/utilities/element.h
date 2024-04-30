@@ -7,22 +7,17 @@
  * @author Roberto Carrazana Pernia
  * @date: Apr 19 2024
  *
- * @brief Utility functions.
+ * @brief Element class. An Element is a K-tuple of float numbers.
  * 
  */
-#ifndef MAX_DIV_UTILITIES_H_
-#define MAX_DIV_UTILITIES_H_
 
-#include <string>
+#ifndef ELEMENT_H_
+#define ELEMENT_H_
+
 #include <vector>
-#include <iostream>
-#include <fstream>
 #include <bits/stdc++.h>
 
 using namespace std;
-
-const string kFourSpaces = "    ";
-const string kMicro = "\u00B5";
 
 /** @brief A class representing an element with values in multiple dimensions. */
 class Element {
@@ -85,29 +80,4 @@ public:
   void Show() const;
 };
 
-/**
- * @brief Validate an index against specified bounds.
- * @param index The index to validate.
- * @param maximum_index The maximum allowed index.
- * @param tag A string tag used in the error message to identify the context of the validation.
- * @param minimum_index (Optional) The minimum allowed index. Defaults to 0 if not specified.
- * @throws runtime_error if the index is out of range.
- */
-void index_validation(unsigned index, unsigned maximum_index, const string& tag, unsigned minimum_index = 0);
-
-/**
- * @brief Checks if an element exists into a vector
- * @param array - vector to check
- * @param element - element to search
- * @return 'true' if exists
- */
-template <typename T>
-bool vector_contains(vector<T> array, const T& element);
-
-/**
-* @brief Prints an integer vector
-* @param array to be printed
-*/
-void show_vector(vector<int> array);
-
-#endif // MAX_DIV_UTILITIES_H_ 
+#endif // ELEMENT_H_ 

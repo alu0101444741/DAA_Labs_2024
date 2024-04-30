@@ -13,7 +13,7 @@
 #ifndef MAIN_
 #define MAIN_
 
-#include "max_div_testing.h"
+#include "../../include/testing/max_div_testing.h"
 
 /** @brief Main function */
 int main(int argc, char* argv[]) {

@@ -9,12 +9,12 @@
  *
  * @brief Testing functions definition.
  */
-#include "max_div_testing.h"
+#include "../../include/testing/max_div_testing.h"
 
 /** @brief Constructor for the Tester class.  */
 Tester::Tester() {  
-  elements_  = vector<string>{"15", "20", "30"};
-  dimension_ = vector<string>{"2",  "3"}; 
+  elements_  = vector<string>{/*"15", "20",*/ "30"};
+  dimension_ = vector<string>{/*"2",*/  "3"}; 
   m_values_ = vector<unsigned>{2, 3, 4, 5};   
   maximum_iterations_ = vector<unsigned>{10, 20};
   candidate_list_sizes_ = vector<unsigned>{2, 3};
@@ -22,8 +22,8 @@ Tester::Tester() {
   algorithms_ = {
     //new GreedyMaxDiversity(),
     //new GreedyMaxDiversity(true),
-    //new GraspMaxDiversity(50, 3, true),
-    //new GvnsMaxDiversity(10, candidate_list_size, k_maximum),    
+    //new GraspMaxDiversity(50, 3),
+    new TabuMaxDiversity(50, 3),    
   };
 }
 
