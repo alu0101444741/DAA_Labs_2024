@@ -1,7 +1,13 @@
 ## Práctica 8: Ramificación y Poda. Algoritmos aproximados
 
+### Defensa final 07/05/2024
+
+* bnb_maxdiv.cpp: Solución (usando BFS)
+* bnb_maxdiv_2.cpp: Intento de solución (actualmente no funciona) siguiendo las instrucciones del paper MDP (Marti, Gallego, Duarte 2010)
+
 ### Entrega 30/04/2024
-* Búsqueda Tabú. Peores resultados que con GRASP
+
+* Búsqueda Tabú ofrece peores resultados que GRASP. \[**CAMBIO**\] La búsqueda tabú no tenía fase de mejora y tampoco estaba dentro de un bucle multiarranque.
 
 ### Entrega 23/04/2024
 
@@ -11,6 +17,9 @@
     \[**HECHO**\] He creado una matriz de distancias para Problema que se inicializa al crearse el problema.
 
 #### Conjuntos S
+Conjunto de elementos de cada instancia.
+<br> 
+<br> 
 [max_div_15_2] <br> 
 S = {   **[0]** {9.11, 3.23}, **[1]** {8.41, 9.98}, **[2]** {7.5, 6.81}, **[3]** {9.96, 8.17}, **[4]** {9.71, 6.49},  <br>
 &emsp;  **[5]** {0.16, 4.62}, **[6]** {0.58, 1.29}, **[7]** {1.88, 3.24}, **[8]** {8.65, 9.98}, **[9]** {1.35, 7.11},  <br>

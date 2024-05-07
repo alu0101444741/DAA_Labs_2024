@@ -7,7 +7,8 @@
  * @author Roberto Carrazana Pernia
  * @date: May 1 2024
  *
- * @brief Branch and Bound Maximum Diversity solver class implementation.
+ * @brief ¡UNUSED! See bnb_maxdiv.cpp to see the actual solution.
+ * Branch and Bound Maximum Diversity solver class implementation.
  * 
  */
 
@@ -137,13 +138,12 @@ Solution BranchBoundMaxDiversity::Solve_2() {
   vector<unsigned> all_elements_indexes = GetElementIndexes(problem_->GetElements());
   vector<bool> selected_elements(problem_->GetElements().size(), false);
 
-  //vector<Node> tree = {Node()}; // Root node
   priority_queue<Node, vector<Node>, function<bool(Node, Node)>> tree(
         [](Node a, Node b) { return a.depth_ > b.depth_; });
 
   float lower_bound = best_solution.GetDiversity();
 
-  tree.push(Node());
+  tree.push(Node()); // Root node
 
   for (unsigned i = 0; i < selected_elements.size(); ++i) {
     if (best_solution.HasElement(i)) selected_elements[i] = true;
@@ -151,17 +151,10 @@ Solution BranchBoundMaxDiversity::Solve_2() {
 
   // (2) Make ActiveNodes = { Initial nodes }
   for (unsigned i = 0; i < all_elements_indexes.size(); i++) {
-    vector<unsigned> current_solution = tree.top().solution_; //tree[0].solution_;
-    current_solution.push_back(i);
-    //tree.push(Node(current_solution, i));    
+    vector<unsigned> current_solution = tree.top().solution_;
+    current_solution.push_back(i);   
     ChangeSelected(current_solution, selected_elements);
-    // Prune if CurrentNode.LB < LB
-    //if (CalculateUpperBound(current_solution, all_elements_indexes, selected_elements) < lower_bound) {
-      //tree[tree.size() - 1].Prune();
-    //}
-    //else {
     tree.push(Node(current_solution, i));
-    //}
     ChangeSelected(current_solution, selected_elements);
     generated_nodes_ ++;
   }
@@ -210,8 +203,8 @@ Solution BranchBoundMaxDiversity::Solve_2() {
 
       for (unsigned j = 0; j < current_selection.size(); ++j) { // (8)
         for (unsigned i = 0; i < unselected.size(); ++i) {
-          //cout << "Accessing " << i << " of " << unselected.size() << endl; // DEBUG
-          //cout << "Accessing " << j << " of " << current_selection.size() << endl; // DEBUG
+          // cout << "Accessing " << i << " of " << unselected.size() << endl; // DEBUG
+          // cout << "Accessing " << j << " of " << current_selection.size() << endl; // DEBUG
           if (selection_dmax[j] < unselected_dmin[i]) {
             tree.pop(); // (9)
             node_removed = true;

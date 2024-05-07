@@ -88,6 +88,13 @@ Solution BranchBoundMaxDiversity::GetInitialSolution(MaximumDiversity* solver) c
   return solver->Solve();
 }
 
+/**
+ * @brief Create initial nodes in the Branch and Bound algorithm tree. 
+ * @param tree The tree vector containing the nodes.
+ * @param selected_elements The vector indicating which elements are selected.
+ * @param all_elements_indexes The vector containing all element indexes.
+ * @param lower_bound The lower bound value.
+ */
 void BranchBoundMaxDiversity::CreateInitialNodes(vector<Node>& tree, vector<bool>& selected_elements, const vector<unsigned>& all_elements_indexes, unsigned lower_bound) {
   for (unsigned i = 0; i < all_elements_indexes.size() - m_value_ + 1; i++) {
     vector<unsigned> current_solution = tree[0].solution_;
@@ -103,6 +110,13 @@ void BranchBoundMaxDiversity::CreateInitialNodes(vector<Node>& tree, vector<bool
   }
 }
 
+/**
+ * @brief Update the best solution found in the Branch and Bound algorithm.
+ * @param best_solution The best solution found so far.
+ * @param tree The tree vector containing the nodes.
+ * @param initial_level The initial level in the tree.
+ * @param next_level The next level in the tree.
+ */
 void BranchBoundMaxDiversity::UpdateSolution(Solution& best_solution, const vector<Node>& tree, unsigned initial_level, unsigned next_level) const {
   float best_z = 0;
   vector<unsigned> solution;
@@ -210,7 +224,7 @@ float BranchBoundMaxDiversity::CalculateUB3(const vector<unsigned>& elements, co
 }
 
 /**
- * @brief Calculate the diversity of selected elements with respect to a given element.
+ * @brief Calculate the diversity of a given element with respect to the selected elements.
  * @param elements The set of elements.
  * @param selected_elements The vector indicating which elements are selected.
  * @param element_v The element to calculate the diversity from.
@@ -226,7 +240,7 @@ float BranchBoundMaxDiversity::CalculateZSel(const vector<unsigned>& elements, c
 }
 
 /**
- * @brief Calculate the diversity of unselected elements with respect to a given element.
+ * @brief Calculate the diversity of a given element with respect to the not selected elements.
  * @param elements The set of elements.
  * @param selected_elements The vector indicating which elements are selected.
  * @param element_v The element to calculate the diversity from.

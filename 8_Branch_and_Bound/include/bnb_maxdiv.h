@@ -14,26 +14,10 @@
 #define BRANCH_BOUND_MAX_DIV_H_
 
 #include "max_div.h"
-//#include "./utilities/branch_bound_utilities.h"
 #include "greedy_maxdiv.h"
 #include "grasp_maxdiv.h"
 
-/*
-vector<unsigned> get_unselected(const vector<unsigned>& all_elements_indexes, const vector<unsigned>& current_selection);
-
-vector<pair<unsigned, float>> sorted_distances(Problem* problem, unsigned v);
-
-float calculate_dmin(Problem* problem, const vector<unsigned>& current_selection,
-  const vector<pair<unsigned, float>>& distances,
-  unsigned m_value_
-);
-
-float calculate_dmax( Problem* problem, const vector<unsigned>& current_selection,
-  const vector<pair<unsigned, float>>& distances,
-  unsigned m_value_
-);
-*/
-/** @brief Greedy Parallel Machine Scheduling Problem solver. */
+/** @brief Branch and Bound Maximum Diversity Problem solver. */
 class BranchBoundMaxDiversity: public MaximumDiversity {
 private:  
   bool perform_local_search_;
@@ -83,7 +67,7 @@ public:
    */
   Solution Solve();
   
-  // **************** Intento de solución usando el Paper ****************
+  // ******** Solution attempt using the paper (bnb_maxdiv_2.cpp) ********
   Solution Solve_2();
   float CalculateElementZ(const vector<unsigned>& elements, const vector<bool>& selected_elements, unsigned element_v, unsigned k);
   vector<unsigned> GetBestElements(
@@ -96,18 +80,30 @@ public:
   
 private:
 
+  /**
+ * @brief Generate a solution for the current problem using a MaximumDiversity solver as Greedy, GRASP or TabuSearch
+ * @param solver Pointer to a MaximumDiversity solver 
+ * @return Solution 
+ */
   Solution GetInitialSolution(MaximumDiversity* solver) const;
 
+  /**
+   * @brief Create initial nodes in the Branch and Bound algorithm tree. 
+   * @param tree The tree vector containing the nodes.
+   * @param selected_elements The vector indicating which elements are selected.
+   * @param all_elements_indexes The vector containing all element indexes.
+   * @param lower_bound The lower bound value.
+   */
   void CreateInitialNodes(vector<Node>& tree, vector<bool>& selected_elements, const vector<unsigned>& all_elements_indexes, unsigned lower_bound);
 
-  void UpdateSolution(Solution& best_solution, const vector<Node>& tree, unsigned initial_level, unsigned next_level) const;
-
   /**
-   * @brief Toggle the selected status of elements based on the provided elements vector.
-   * @param elements The vector containing the indices of elements whose selected status needs to be toggled.
-   * @param selected The vector indicating the selected status of elements.
+   * @brief Update the best solution found in the Branch and Bound algorithm.
+   * @param best_solution The best solution found so far.
+   * @param tree The tree vector containing the nodes.
+   * @param initial_level The initial level in the tree.
+   * @param next_level The next level in the tree.
    */
-  void ChangeSelected(const vector<unsigned>& elements, vector<bool>& selected) const;
+  void UpdateSolution(Solution& best_solution, const vector<Node>& tree, unsigned initial_level, unsigned next_level) const;
 
   /**
    * @brief Calculate the upper bound for the Branch and Bound algorithm.
@@ -161,6 +157,13 @@ private:
    * @return The diversity value.
    */
   float CalculateZUnsel(const vector<unsigned>& elementSet, const vector<bool>& selected_elements, unsigned element_v, unsigned k) const;
+
+  /**
+   * @brief Toggle the selected status of elements based on the provided elements vector.
+   * @param elements The vector containing the indices of elements whose selected status needs to be toggled.
+   * @param selected The vector indicating the selected status of elements.
+   */
+  void ChangeSelected(const vector<unsigned>& elements, vector<bool>& selected) const;
 };
 
 #endif /* BRANCH_BOUND_MAX_DIV_H_ */

@@ -23,7 +23,7 @@ Tester::Tester() {
     //new GreedyMaxDiversity(),
     //new GreedyMaxDiversity(true),
     //new GraspMaxDiversity(50, 3),
-    //new TabuMaxDiversity(50, 3),
+    new TabuMaxDiversity(50, 3),
     new BranchBoundMaxDiversity()    
   };
 }
