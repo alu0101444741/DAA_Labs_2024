@@ -13,8 +13,8 @@
 
 /** @brief Constructor for the Tester class.  */
 Tester::Tester() {  
-  elements_  = vector<string>{/*"15", "20",*/ "30"};
-  dimension_ = vector<string>{/*"2",*/  "3"}; 
+  elements_  = vector<string>{"15", "20", "30"};
+  dimension_ = vector<string>{"2",  "3"}; 
   m_values_ = vector<unsigned>{2, 3, 4, 5};   
   maximum_iterations_ = vector<unsigned>{10, 20};
   candidate_list_sizes_ = vector<unsigned>{2, 3};
@@ -23,7 +23,8 @@ Tester::Tester() {
     //new GreedyMaxDiversity(),
     //new GreedyMaxDiversity(true),
     //new GraspMaxDiversity(50, 3),
-    new TabuMaxDiversity(50, 3),    
+    //new TabuMaxDiversity(50, 3),
+    new BranchBoundMaxDiversity()    
   };
 }
 
@@ -43,14 +44,15 @@ void Tester::TestMaximumDiversityAlgorithms(bool show_elements) {
         if (show_elements) ShowElements(problem);
 
         bool is_greedy_algorithm = (algorithm->GetAlgorithmName().find("Greedy") != std::string::npos);
+        bool is_bnb_algorithm = (algorithm->GetAlgorithmName().find("Branch") != std::string::npos);
 
         for (const unsigned& m : m_values_) {
           algorithm->SetSubsetSize(m);
           
           // Check if the algorithm is Greedy to shrink the output table
-          if (is_greedy_algorithm) {
+          if (is_greedy_algorithm || is_bnb_algorithm) {
             TestAlgorithm(algorithm, filename, 1, 1);
-            cout << endl; 
+            //cout << endl; 
             continue;
           }
 
@@ -58,11 +60,12 @@ void Tester::TestMaximumDiversityAlgorithms(bool show_elements) {
             algorithm->SetMaximumIterations(iterations);
             for (const unsigned& candidates : candidate_list_sizes_) {
               TestAlgorithm(algorithm, filename, iterations, candidates);
-              cout << endl;          
+              //cout << endl;          
             }           
           }            
         }                
-        cout << "|---------|------|----|---|---|-----|---|" << endl; // Markdown divisor
+        cout << "|----------------|----|---|---|---------|-------|--------|" << endl; // Markdown divisor
+        //cout << "\\cline{2-8} \\\\" << endl; // LaTeX divisor
       }
     }
   }
@@ -82,10 +85,11 @@ void Tester::TestAlgorithm(MaximumDiversity* maxdiv_algorithm, const string& fil
   auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
 
   solution.ShowMarkdown(
-    "[" + filename + "]",
+    filename, //"[" + filename + "]",
     to_string(duration.count()),
     iterations,
     candidate_list_size,
+    (maxdiv_algorithm->GetAlgorithmName().find("Branch") != std::string::npos) ? maxdiv_algorithm->GetNodesGenerated() : 1, 
     true
   );
 }

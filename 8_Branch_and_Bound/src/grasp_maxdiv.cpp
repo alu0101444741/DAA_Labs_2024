@@ -18,13 +18,12 @@
  * @return Solution representing a set of k-dimensional elements.
  */
 Solution GraspMaxDiversity::Solve() {
-  vector<Element> remaining_elements = problem_->GetElements();
   Solution best_solution(problem_);
   Solution current_solution(problem_);  
 
   for (unsigned iteration = 0; iteration < maximum_iterations_; ++ iteration) {
 
-    current_solution = ConstructInitialSolution(problem_, candidate_list_size_);
+    current_solution = ConstructInitialSolution(candidate_list_size_);
 
     current_solution = LocalSearch(current_solution);
     

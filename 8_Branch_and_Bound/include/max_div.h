@@ -24,7 +24,7 @@ protected:
   Solution* solution_;
   string algorithm_name_;
   unsigned m_value_;
-  unsigned maximum_iterations_, candidate_list_size_;
+  unsigned maximum_iterations_, candidate_list_size_, generated_nodes_;
 public:
   /** @brief Constructor for the Maximum Diversity solver. */
   MaximumDiversity() : algorithm_name_("Maximum Diversity"),  m_value_(0) { }
@@ -51,7 +51,7 @@ public:
    * @brief Setter for the maximum iterations.
    * @param m_value - The new maximum iterations value.
    */
-  void SetMaximumIterations(unsigned iterations) { maximum_iterations_ = iterations; }
+  void SetMaximumIterations(unsigned iterations) { maximum_iterations_ = iterations; }  
 
   /**
    * @brief Setter for the problem.
@@ -71,14 +71,14 @@ public:
    */
   string GetAlgorithmName() { return algorithm_name_; }
 
+  unsigned GetNodesGenerated() const { return generated_nodes_; }
+
 protected:
 /**
  * @brief Build the initial solution for the Maximum Diversity algorithms.
- * 
- * @param problem - Problem information
  * @param candidate_list_size - Maximum candidate list size
  */
-Solution ConstructInitialSolution(Problem* problem, unsigned candidate_list_size);
+Solution ConstructInitialSolution(unsigned candidate_list_size);
 
 /**
  * @brief Calculate the gravity center of a set of elements.
@@ -102,28 +102,28 @@ vector<unsigned> GetElementIndexes(const vector<Element>& elements) const;
 vector<unsigned> GetRemainingElements(const Solution& solution) const;
 
 /**
- * @brief Get the furthest element from a given center element.
- * @param elements A vector of Element objects representing the elements.
- * @param center An Element object representing the center element.
- * @return The furthest Element object from the center.
+ * @brief Get the index of furthest element from another Element.
+ * @param elements Indexes of Element objects representing the elements.
+ * @param center An Element object representing the centroid element.
+ * @return Index of the furthest Element object from the given Element.
  */
-Element GetFurthestElement(const vector<Element>& elements, const Element& center) const;
+unsigned GetFurthestElement(const vector<unsigned>& elements, const Element& center) const;
 
 /**
  * @brief Get the N furthest elements from a given center element.
  * @param number_of_elements Amount of elements to get
- * @param elements A vector of Element objects representing the elements.
+ * @param elements A vector of Element indexes representing the elements.
  * @param center An Element object representing the center element.
- * @return The furthest Element object from the center.
+ * @return Indexes of the furthests Element objects from the center.
  */
-vector<Element> GetTheNFurthestElements(unsigned number_of_elements, const vector<Element>& elements, const Element& center) const;
+vector<unsigned> GetTheNFurthestElements(unsigned number_of_elements, const vector<unsigned>& elements, const Element& center) const;
 
 /**
  * @brief Erase a specific element from a vector of elements.
- * @param elements A reference to a vector of Element objects.
+ * @param elements A reference to a vector of Element indexes.
  * @param element_to_erase The Element object to be erased from the vector.
  */
-void EraseElement(vector<Element>& elements, const Element& element_to_erase) const;
+void EraseElement(vector<unsigned>& elements, unsigned element_to_erase) const;
 
 };
 #endif // MAXIMUM_DIVERSITY_H_

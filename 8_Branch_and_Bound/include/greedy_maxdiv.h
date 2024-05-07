@@ -15,12 +15,12 @@
 
 #include "max_div.h"
 
-/** @brief Greedy Parallel Machine Scheduling Problem solver. */
+/** @brief Greedy Maximum Diversity Problem solver. */
 class GreedyMaxDiversity: public MaximumDiversity {
 private:  
   bool perform_local_search_;
 public:  
-  /** @brief Constructor for the MGreedyMaxDiversity solver. */
+  /** @brief Constructor for the GreedyMaxDiversity solver. */
   GreedyMaxDiversity(bool perform_local_search = false)
   : perform_local_search_(perform_local_search)
   {

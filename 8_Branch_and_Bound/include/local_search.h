@@ -25,8 +25,8 @@ Solution LocalSearch(const Solution& solution);
 /**
  * @brief Select a random element from a list of candidates.
  * @param candidates The list of candidate elements.
- * @return A randomly selected element from the candidates.
+ * @return Index of a randomly selected element from the candidates.
  */
-Element SelectRandomElement(const vector<Element>& candidates);
+unsigned SelectRandomElement(const vector<unsigned>& candidates);
 
 #endif /* LOCAL_SEARCH_H_ */

@@ -19,15 +19,15 @@
  */
 Solution GreedyMaxDiversity::Solve() {
   Solution solution(problem_);
-  vector<Element> remaining_elements = problem_->GetElements();    
-  Element current_center = CalculateGravityCenter(GetElementIndexes(remaining_elements));
+  vector<unsigned> remaining_elements = GetElementIndexes(problem_->GetElements());   
+  Element current_center = CalculateGravityCenter(remaining_elements);
 
   while (solution.GetSolutionSize() < m_value_) {
 
-    Element furthest_element = GetFurthestElement(remaining_elements, current_center);
+    unsigned furthest_element = GetFurthestElement(remaining_elements, current_center);
     
-    solution.AddElement(furthest_element.GetIndex());
-    
+    solution.AddElement(furthest_element);
+
     EraseElement(remaining_elements, furthest_element);
 
     current_center = CalculateGravityCenter(solution.GetElements());

@@ -15,6 +15,7 @@
 #include "greedy_maxdiv.h"
 #include "grasp_maxdiv.h"
 #include "tabu_maxdiv.h"
+#include "bnb_maxdiv.h"
 
 const string kInputFolderPath = "./input/";
 const string kInputFileExtension = ".txt";

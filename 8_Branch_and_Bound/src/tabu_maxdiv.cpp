@@ -8,52 +8,53 @@
  * @date: Apr 20 2024
  *
  * @brief Greedy Maximum Diversity solver class implementation.
- * 
  */
 
 #include "tabu_maxdiv.h"
-
-
 
 /**
  * @brief Solve the Maximum Diversity using a Tabu Search algorithm.
  * @return Solution representing a set of k-dimensional elements.
  */
 Solution TabuMaxDiversity::Solve() {  
-  Solution current_solution = ConstructInitialSolution(problem_, candidate_list_size_);
-  Solution best_solution = current_solution;
-  vector<SwapMovement> tabu_list;
+  Solution best_solution = ConstructInitialSolution(candidate_list_size_);
   
-  vector<unsigned> remaining_elements = GetRemainingElements(current_solution);  
+  unsigned i = 0;
+  do {  // Bucle multiarranque
+    Solution current_solution = ConstructInitialSolution(candidate_list_size_);
+    vector<SwapMovement> tabu_list(0, SwapMovement::kNullSwapMovement);
+    vector<unsigned> remaining_elements = GetRemainingElements(current_solution);
 
-  for (unsigned iteration = 0; iteration < maximum_iterations_; ++ iteration) {
-    // Get all possible SwapMovement for the current solution
-    vector<SwapMovement> available_movements = GenerateMovements(current_solution, remaining_elements);
-    //cout << kFourSpaces + "Solution size: " << best_solution.GetSolutionSize() << endl;
-    //cout << kFourSpaces + "Remaining elements: " << remaining_elements.size() << endl;
-    //for (const auto& e : remaining_elements) cout << e << ", ";
-    //cout << endl;
-    //cout << kFourSpaces + "Av. movements: " << available_movements.size() << endl << endl;    
-    //UpdateTabuListValues(current_solution, tabu_list);
+    for (unsigned iteration = 0; iteration < maximum_iterations_; ++ iteration) {
+      // Get all possible SwapMovement for the current solution
+      vector<SwapMovement> available_movements = GenerateMovements(current_solution, remaining_elements);
 
-    // Search for the movement which provides the highest Z and is NOT in the tabu list
-    SwapMovement best_move = GetBestNotTabuMovement(available_movements, tabu_list);
+      // Search for the movement which provides the highest Z and is NOT in the tabu list
+      SwapMovement best_move = GetBestNotTabuMovement(available_movements, tabu_list);    
 
-    if (!(best_move == SwapMovement::kNullSwapMovement)) { // Update Solution if found a movement
-      current_solution.ReplaceElement(best_move.GetIndexes().first, best_move.GetIndexes().second);
-      replace_index(remaining_elements, best_move.GetIndexes().first, best_move.GetIndexes().second);      
-      if (best_solution.GetDiversity() < current_solution.GetDiversity()) {
-        best_solution = current_solution;
-      }      
-      tabu_list.push_back(best_move);
-    } else { // Apply the best tabu movement and move it to the back of the list
-      ApplyBestTabuMovement(current_solution, tabu_list, remaining_elements);
-    }    
-    // Remove oldest movement
-    if (tabu_list.size() > candidate_list_size_) {
-      tabu_list.erase(tabu_list.begin());
+      if (!(best_move == SwapMovement::kNullSwapMovement)) { // Update Solution if found a movement
+        current_solution.ReplaceElement(best_move.GetIndexes().first, best_move.GetIndexes().second);
+
+        current_solution = LocalSearch(current_solution);
+
+        replace_index(remaining_elements, best_move.GetIndexes().first, best_move.GetIndexes().second);
+
+        if (best_solution.GetDiversity() < current_solution.GetDiversity()) {
+          best_solution = current_solution;
+        }      
+        tabu_list.push_back(best_move);
+      } else { // Apply the best tabu movement and move it to the back of the list
+        ApplyBestTabuMovement(current_solution, tabu_list, remaining_elements);
+        current_solution = LocalSearch(current_solution);
+      }
+      // Remove oldest movement
+      if (tabu_list.size() > candidate_list_size_) {
+        tabu_list.erase(tabu_list.begin());
+      }
     }
-  }
+    i++;
+  } while (i < maximum_iterations_);
+  
   return best_solution;
 }
 
@@ -120,6 +121,10 @@ void TabuMaxDiversity::ApplyBestTabuMovement(Solution& solution, vector<SwapMove
   tabu_list.erase(find(tabu_list.begin(), tabu_list.end(), best_tabu_movement));
   tabu_list.push_back(best_tabu_movement);
 }
+
+
+
+
 
 void TabuMaxDiversity::UpdateTabuListValues(const Solution& solution, vector<SwapMovement>& movements) const {
   for (SwapMovement& e : movements) {
