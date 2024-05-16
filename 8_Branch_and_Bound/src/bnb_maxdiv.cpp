@@ -47,7 +47,6 @@ Solution BranchBoundMaxDiversity::Solve() { //return Solve_2();
     for (unsigned j = initial_level; j < next_level; j++) {
       // Skip node if pruned. Add an empty node
       if (tree[j].isPruned()) {
-        cout << "(!) ";
         for (unsigned k = tree[j].label_; k <= all_elements_indexes.size() - (m_value_ - tree[j].depth_); k++) {
           tree.push_back(Node());
           level_counter++;
